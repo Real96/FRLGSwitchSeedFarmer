@@ -6,7 +6,7 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 3) Edit all the settings inside the `config.json` file
 4) Connect the Switch and the PC to the same WiFi/Ethernet connection
 5) Start Pokémon FireRed or Pokémon LeafGreen
-6) Start the script or executable
+6) Start the script or the executable
 
 ## Settings
 ### IP
@@ -25,10 +25,10 @@ Number of seeds you want to collect in this run (will either collect these, or u
 Sub-frame granualarity. Value 4 means we increment in quarter frame steps.
 
 ### OUTPUT_FILE_NAME
-Name of CSV file in which results will be stored. It will be saved in the same folder of the script.
+Name of CSV file in which results will be stored. It will be saved in the same folder of the script/executable.
 
 ### DEBUG
-Enable debug printing.
+Enable or disable debug printing.
 
 ## Credits:
 * [olliz0r](https://github.com/olliz0r) for [sys-botbase](https://github.com/olliz0r/sys-botbase)
