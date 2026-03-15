@@ -25,7 +25,10 @@ Number of seeds you want to collect in this run (will either collect these, or u
 Sub-frame granualarity. Value 4 means we increment in quarter frame steps.
 
 ### OUTPUT_FILE_NAME
-Name of CSV file in which results will be stored. It will be saved in the same folder of the script/executable.
+Name of CSV file in which raw results will be stored. It will be saved in the same folder of the script/executable.
+
+### PROCESSED_FILE_NAME
+Name of CSV file in which processed results will be stored. Processed results compress duplicate seed entries and provides a time estimate. Unit of time is 1/REAPEAT_TIMES GBA frames. It will be saved in the same folder of the script/executable.
 
 ### DEBUG
 Enable or disable debug printing.
