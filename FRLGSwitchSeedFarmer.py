@@ -64,7 +64,7 @@ while seedsCounter < seedsToCollect and APressValue <= APressUpperLimit and cons
         restart()
         b.pause(1)
         resetTime = time()
-        consecutiveFailures+=1
+        consecutiveFailures += 1
         continue
 
     # Check if we have not reached our "boot succeeded" detection within 5 seconds, reset if need be
@@ -108,16 +108,16 @@ while seedsCounter < seedsToCollect and APressValue <= APressUpperLimit and cons
             restart()
             b.pause(1)
             resetTime = time()
-            continue       
+            continue
 
         # Collect data
         initialSeed = b.getInitialSeed()
         seedsCounter += 1
-        print(f"{seedsCounter:04d} - {initialSeed:04X} | {APressValue} ({(toc-tic):.4f})")
+        print(f"{seedsCounter:04d} - {initialSeed:04X} | {APressValue} ({(toc - tic):.4f})")
 
         with open(outputFileName, 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([f"{initialSeed:04X}", APressValue, toc-tic])
+            writer.writerow([f"{initialSeed:04X}", APressValue, toc - tic])
 
         repeatCounter+=1
 
@@ -130,14 +130,14 @@ while seedsCounter < seedsToCollect and APressValue <= APressUpperLimit and cons
         toc = 0
         restart()
         resetTime = time()
-        
     elif VBlankCounter > APressValue and tic != 0:
         print("Missed frame to press A")
-        consecutiveFailures+=1
+        consecutiveFailures += 1
         tic = 0
         toc = 0
         restart()
         b.pause(1)
         resetTime = time()
         continue
+
     b.pause(0.001)
