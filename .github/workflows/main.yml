@@ -29,12 +29,14 @@ jobs:
         run: |
           # pip install -r requirements.txt
           pip install cx_freeze==8.4.0
+        shell: bash
       - name: Freeze
         run: |
           cxfreeze --script main.py --target-dir dist --target-name=frlg_switch_seed_farmer
           cxfreeze --script process_seeds.py --target-dir dist_processor --target-name=frlg_switch_seed_processor
           cp -r dist_processor/* dist/
           cp config.json dist
+        shell: bash
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
