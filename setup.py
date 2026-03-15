@@ -10,12 +10,5 @@ setup(
     version="1.0",
     description="",
     executables=executables,
-    options={
-        "build_exe": {
-            "build_exe": "dist",
-            "zip_includes": [
-                ("config.json, config.json"),
-            ],
-        }
-    },
+    options={"build_exe": {"build_exe": "dist", "include_files": ["config.json"]}},
 )
