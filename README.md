@@ -6,7 +6,7 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 3) Edit all the settings inside the `config.json` file
 4) Connect the Switch and the PC to the same WiFi/Ethernet connection
 5) Start Pokémon FireRed or Pokémon LeafGreen
-6) Stat the script
+6) Start the script or executable
 
 ## Settings
 ### IP
