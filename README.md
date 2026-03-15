@@ -19,16 +19,16 @@ The IP address of your console (System Settings > Internet > IP address)
 Initial value for in game frame to start recording data at. Minimum tested and working value is 1724.
 
 ### APressUpperLimit
-Last value for in game frame to start recording data at. Minimum tested and working value is 4158.
+Last value for in game frame to start recording data at. Maxmum tested and working value is 4158.
 
 ### seedsToCollect
-How many seeds do you want to collect in this run (will either collect these, or until it reaches upper limit).
+Number of seeds you want to collect in this run (will either collect these, or until it reaches upper limit).
 
 ### repeatTimes
-Sub-frame granualarity. 4 means we increment in quarter frame steps.
+Sub-frame granualarity. Value 4 means we increment in quarter frame steps.
 
 ### outputFileName
-Name of CSV to store results.
+Name of CSV file in which results will be stored. It will be saved in the same folder of the script.
 
 ## Credits:
 * [olliz0r](https://github.com/olliz0r) for [sys-botbase](https://github.com/olliz0r/sys-botbase)
