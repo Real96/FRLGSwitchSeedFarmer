@@ -132,5 +132,14 @@ while seedsCounter < seedsToCollect and APressValue <= APressUpperLimit and cons
         toc = 0
         restart()
         resetTime = time()
-
+        
+    elif VBlankCounter > APressValue:
+        print("Missed frame to press A")
+        consecutiveFailures+=1
+        tic = 0
+        toc = 0
+        restart()
+        b.pause(1)
+        resetTime = time()
+        continue
     b.pause(0.001)
