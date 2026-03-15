@@ -1,0 +1,8 @@
+{
+    "IP": "192.168.1.16",
+    "APressInitialValue": 1724,
+    "APressUpperLimit": 4158,
+    "seedsToCollect": 9740,
+    "repeatTimes": 4,
+    "outputFileName": "Sysbot Seeds.csv"
+}

@@ -5,6 +5,11 @@ from PySysBot import FRLGBot
 
 config = json.load(open("config.json"))
 b = FRLGBot(config["IP"])
+APressInitialValue = config["APressInitialValue"]
+APressUpperLimit = config["APressUpperLimit"]
+seedsToCollect = config["seedsToCollect"]
+repeatTimes = config["repeatTimes"]
+outputFileName = config["outputFileName"]
 
 def signal_handler(signal, advances): #CTRL+C handler
     print("Stop request")
@@ -23,22 +28,6 @@ VBlankCounter = 0
 repeatCounter = 0
 tic = 0
 toc = 0
-
-##################################################################################################
-# You only touch stuff in this area
-
-# Tested range of good values in FR MGBA  0x6BC - 0x103E (1724 - 4158)
-
-# Initial value for in game frame to start recording data at
-APressInitialValue = 1724
-APressUpperLimit = 4158
-# How many seeds do you want to collect in this run (will either collect these, or until it reaches upper limit)
-seedsToCollect = 9740
-# Sub-frame granualarity. 4 means we increment in quarter frame steps
-repeatTimes = 4
-# Name of CSV to store results
-outputFileName = 'Sysbot Seeds.csv'
-##################################################################################################
 
 APressValue = APressInitialValue
 delay = 16.7427/1000/repeatTimes
