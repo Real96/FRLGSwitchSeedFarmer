@@ -113,7 +113,7 @@ while seedsCounter < seedsToCollect and APressValue <= APressUpperLimit and cons
         # Collect data
         initialSeed = b.getInitialSeed()
         seedsCounter += 1
-        print(f"{seedsCounter:04d} - {initialSeed:04X} | {APressValue} ({VBlankCounter}) ({(toc-tic):.4f})")
+        print(f"{seedsCounter:04d} - {initialSeed:04X} | {APressValue} ({(toc-tic):.4f})")
 
         with open(outputFileName, 'a', newline='') as file:
             writer = csv.writer(file)
