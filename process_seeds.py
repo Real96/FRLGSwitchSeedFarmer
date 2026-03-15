@@ -5,6 +5,7 @@ import json
 
 
 SUBFRAME_MULTIPLIER = config["REAPEAT_TIMES"]
+RAW_FILE_NAME = config["OUTPUT_FILE_NAME"]
 PROCESSED_FILENAME = config["PROCESSED_FILE_NAME"]
 
 with open("config.json", "r", encoding="utf-8") as f:
@@ -15,7 +16,7 @@ seeds = None
 frames = None
 times = None
 time_unit = 280896/16777216/SUBFRAME_MULTIPLIER
-with open(PROCESSED_FILENAME, mode='r', newline='', encoding='utf-8') as file:
+with open(RAW_FILE_NAME, mode='r', newline='', encoding='utf-8') as file:
     reader = csv.reader(file)
     transposed_data = list(zip(*reader))
     seeds = [int(seed, 16) for seed in transposed_data[0][1:]]
@@ -79,7 +80,7 @@ while index < len(sorted_seeds):
 column_headers = ['Seed', f'Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames)']
 all_data = [[f"{seed:04X}" for seed in reduced_seeds], reduced_times]
 rows = zip_longest(*all_data, fillvalue="")
-with open("Processed Results.csv", "w+", newline="") as f:
+with open(PROCESSED_FILENAME, "w+", newline="") as f:
     writer = csv.writer(f)
     writer.writerow(column_headers) 
     for row in rows:
