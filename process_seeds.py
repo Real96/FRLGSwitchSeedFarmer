@@ -86,7 +86,7 @@ while index < len(sorted_seeds):
 
     index+=1
 
-column_headers = ['Seed', f'Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames)']
+column_headers = ['Seed', f'Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames']
 all_data = [[f"{seed:04X}" for seed in reduced_seeds], reduced_times]
 rows = zip_longest(*all_data, fillvalue="")
 
