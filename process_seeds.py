@@ -13,12 +13,13 @@ frames = None
 times = None
 time_unit = 280896 / 16777216 / SUBFRAME_MULTIPLIER
 
-with open(RAW_FILE_NAME, mode='r', newline='', encoding='utf-8') as file:
+with open(RAW_FILE_NAME, mode="r", newline="", encoding="utf-8") as file:
     reader = csv.reader(file)
     transposed_data = list(zip(*reader))
     seeds = [int(seed, 16) for seed in transposed_data[0][1:]]
     frames = [int(frame) for frame in transposed_data[1][1:]]
     times = [float(ms) for ms in transposed_data[2][1:]]
+
 
 indices = list(range(len(seeds)))
 
@@ -30,24 +31,21 @@ for index, seed in enumerate(seeds):
 
     positions[seed].append(times[index])
 
-for seed in positions:
-    positions[seed].sort()
+for _, position_list in positions.items():
+    position_list.sort()
 
 windows = {}
 
-for seed in positions:
-    position_list = positions[seed]
+for seed, position_list in positions.items():
     windows[seed] = []
-    index = 0
     running_window = []
 
-    while  index < len(position_list):
-        if len(running_window) > 0 and position_list[index] - running_window[-1] >= 0.024:
+    for position in position_list:
+        if len(running_window) > 0 and position - running_window[-1] >= 0.024:
             windows[seed].append(tuple(running_window))
             running_window = []
 
-        running_window.append(position_list[index])
-        index+=1
+        running_window.append(position)
 
     windows[seed].append(tuple(running_window))
 
@@ -61,12 +59,12 @@ for index, seed in enumerate(seeds):
         if time in window:
             averages[index] = statistics.mean(window)
 
-indices.sort(key = lambda x: frames[x])
-indices.sort(key = lambda x: times[x])
-indices.sort(key = lambda x: averages[x])
+indices.sort(key=lambda x: frames[x])
+indices.sort(key=lambda x: times[x])
+indices.sort(key=lambda x: averages[x])
 
-for i in range(len(averages)):
-    averages[i] = int(round(averages[i]/time_unit))
+for i, avg in enumerate(averages):
+    averages[i] = int(round(avg / time_unit))
 
 sorted_seeds = [seeds[x] for x in indices]
 sorted_frames = [seeds[x] for x in indices]
@@ -74,23 +72,20 @@ sorted_times = [times[x] for x in indices]
 sorted_averages = [averages[x] for x in indices]
 
 reduced_seeds = []
-reduced_times  = []
+reduced_times = []
 last_seed = None
-index = 0
 
-while index < len(sorted_seeds):
-    if sorted_seeds[index] != last_seed:
-        reduced_seeds.append(sorted_seeds[index])
-        reduced_times.append(sorted_averages[index])
-        last_seed = sorted_seeds[index]
+for sorted_seed, sorted_average in zip(sorted_seeds, sorted_averages):
+    if sorted_seed != last_seed:
+        reduced_seeds.append(sorted_seed)
+        reduced_times.append(sorted_average)
+        last_seed = sorted_seed
 
-    index+=1
-
-column_headers = ['Seed', f'Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames']
+column_headers = ["Seed", f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames"]
 all_data = [[f"{seed:04X}" for seed in reduced_seeds], reduced_times]
 rows = zip_longest(*all_data, fillvalue="")
 
-with open(PROCESSED_FILENAME, "w+", newline="") as f:
+with open(PROCESSED_FILENAME, "w+", newline="", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(column_headers)
 
