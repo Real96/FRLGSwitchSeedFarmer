@@ -52,16 +52,16 @@ while (
             print(f"VBlank: {vblank_counter}")
     # TODO: actual exception types
     except Exception:
-        print("Error reading, resetting")
+        print("Error reading RAM, restarting the game and resetting the connection in 15 seconds")
         tic = 0
         toc = 0
-        bot.restart_game()
-        bot.pause(1)
+        bot.pause(15)
+        bot.restart_game(True)
         reset_time = time()
         consecutive_failures += 1
         continue
 
-    # Check if we have not reached our "boot succeeded" detection within 5 seconds, reset if need be
+    # Check if we have not reached our "boot succeeded" detection within 10 seconds, reset if need be
     if tic == 0 and time() - reset_time > 10:
         # We failed to properly boot, try again
         print("Failed to boot")

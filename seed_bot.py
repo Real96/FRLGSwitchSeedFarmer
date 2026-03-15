@@ -67,16 +67,17 @@ GAMES = {
 
 class SeedBot:
     def __init__(self, ip):
+        self.ip = ip
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(1)
-        self.s.connect((ip, 6000))
+        self.s.connect((self.ip, 6000))
         print("Bot Connected")
         self.send_command("configure echoCommands 0")
 
         title_id = self.get_title_id()
         if title_id == 0:
-            print("Game not running")
-            self.close()
+            print("Game not running, starting it and resetting the connection")
+            self.restart_game(True)
         elif title_id not in GAMES:
             print(f"Unsupported title: {title_id:016X}")
             self.close()
@@ -154,10 +155,15 @@ class SeedBot:
         self.pause(0.2)
         self.click("A")
 
-    def restart_game(self):
+    def restart_game(self, needReconnection=False):
         self.release("A")
         self.quit_game()
         self.enter_game()
+
+        if needReconnection:
+            self.close(False)
+            self.pause(1.5)
+            self.__init__(self.ip)
 
     def read_initial_seed(self):
         return int.from_bytes(self.read(0x1208000, 2), "little")
