@@ -88,12 +88,23 @@ while (
         # Stall until seed is initialized
         ok = True
 
-        while not bot.read_is_box_pointer_initialized():
-            if time() - toc > 3:
-                ok = False
-                break
+        try:
+            while not bot.read_is_box_pointer_initialized():
+                if time() - toc > 3:
+                    ok = False
+                    break
 
-            bot.pause(0.001)
+                bot.pause(0.001)
+        # TODO: actual exception types
+        except Exception:
+            print("Error reading RAM, restarting the game and resetting the connection in 15 seconds")
+            tic = 0
+            toc = 0
+            bot.pause(15)
+            bot.restart_game(True)
+            reset_time = time()
+            consecutive_failures += 1
+            continue
 
         # Seed initialization timed out, reset and try again
         if not ok:
@@ -107,7 +118,19 @@ while (
             continue
 
         # Collect data
-        initialSeed = bot.read_initial_seed()
+        try:
+            initialSeed = bot.read_initial_seed()
+        # TODO: actual exception types
+        except Exception:
+            print("Error reading RAM, restarting the game and resetting the connection in 15 seconds")
+            tic = 0
+            toc = 0
+            bot.pause(15)
+            bot.restart_game(True)
+            reset_time = time()
+            consecutive_failures += 1
+            continue
+
         seeds_counter += 1
         print(
             f"{seeds_counter:04d} - {initialSeed:04X} | {a_press_value} ({(toc - tic):.4f})"
