@@ -39,6 +39,7 @@ jobs:
           path: |
             dist/*
   release:
+    if: github.repository == 'Real96/FRLGSwitchSeedFarmer' && github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: build
     runs-on: ubuntu-latest
 
