@@ -1,4 +1,3 @@
-# Go to root/test of PyNXBot
 import signal, json, csv, os
 from time import time
 from seed_bot import SeedBot
