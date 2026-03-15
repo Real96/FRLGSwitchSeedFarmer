@@ -12,6 +12,7 @@ A_PRESS_UPPER_LIMIT = config["A_PRESS_UPPER_LIMIT"]
 SEEDS_TO_COLLECT = config["SEEDS_TO_COLLECT"]
 REPEAT_TIMES = config["REPEAT_TIMES"]
 OUTPUT_FILE_NAME = config["OUTPUT_FILE_NAME"]
+DEBUG = config["DEBUG"]
 
 
 def signal_handler(_signal, _advances):  # CTRL+C handler
@@ -46,6 +47,9 @@ while (
 ):
     try:
         vblank_counter = bot.read_vblank_counter()
+
+        if DEBUG:
+            print(f"VBlank: {vblank_counter}")
     # TODO: actual exception types
     except Exception:
         print("Error reading, resetting")

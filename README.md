@@ -27,6 +27,9 @@ Sub-frame granualarity. Value 4 means we increment in quarter frame steps.
 ### OUTPUT_FILE_NAME
 Name of CSV file in which results will be stored. It will be saved in the same folder of the script.
 
+### DEBUG
+Enable debug printing.
+
 ## Credits:
 * [olliz0r](https://github.com/olliz0r) for [sys-botbase](https://github.com/olliz0r/sys-botbase)
 * [wwwwwwzx](https://github.com/wwwwwwzx) for [PyNXBot](https://github.com/wwwwwwzx/PyNXBot)
