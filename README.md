@@ -13,10 +13,10 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 The IP address of your console (System Settings > Internet > IP address)
 
 ### APressInitialValue
-Initial value for in game frame to start recording data at. Minimum tested and working value is 1724.
+Initial value for in game frame to start recording data at. Minimum working value is 1724.
 
 ### APressUpperLimit
-Last value for in game frame to start recording data at. Maxmum tested and working value is 4158.
+Last value for in game frame to start recording data at. Maximum working value is 4160.
 
 ### seedsToCollect
 Number of seeds you want to collect in this run (will either collect these, or until it reaches upper limit).
