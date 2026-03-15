@@ -1,11 +1,12 @@
 # Go to root/test of PyNXBot
 import signal, json, csv, os
 from time import time
-from PySysBot import FRLGBot
+from seed_bot import SeedBot
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
-b = FRLGBot(config["IP"])
+
+bot = SeedBot(config["IP"])
 APressInitialValue = config["APressInitialValue"]
 APressUpperLimit = config["APressUpperLimit"]
 seedsToCollect = config["seedsToCollect"]
@@ -15,17 +16,10 @@ outputFileName = config["outputFileName"]
 
 def signal_handler(_signal, _advances):  # CTRL+C handler
     print("Stop request")
-    b.close()
+    bot.close()
 
 
 signal.signal(signal.SIGINT, signal_handler)
-
-
-def restart():
-    b.release("A")
-    b.quitGame()
-    b.enterGame(False)
-
 
 lowVBlankHeralding = 256
 seedsCounter = 0
@@ -51,11 +45,11 @@ while (
     and consecutiveFailures < 5
 ):
     try:
-        VBlankCounter = b.getVBlankCounter()
+        VBlankCounter = bot.read_vblank_counter()
     except Exception as e:
         print("Error reading, resetting")
-        restart()
-        b.pause(1)
+        bot.restart_game()
+        bot.pause(1)
         resetTime = time()
         consecutiveFailures += 1
         continue
@@ -65,8 +59,8 @@ while (
         # We failed to properly boot, try again
         print("Failed to boot")
         consecutiveFailures += 1
-        restart()
-        b.pause(1)
+        bot.restart_game()
+        bot.pause(1)
         resetTime = time()
         continue
 
@@ -77,20 +71,20 @@ while (
     # Attempt to grab seed
     if VBlankCounter == APressValue:
         if repeatCounter > 0:
-            b.pause(delay * repeatCounter)
+            bot.pause(delay * repeatCounter)
 
-        b.press("A")
+        bot.press("A")
         toc = time()
 
         # Stall until seed is initialized
         ok = True
 
-        while not b.isBoxPointerInitialized():
+        while not bot.read_is_box_pointer_initialized():
             if time() - toc > 3:
                 ok = False
                 break
 
-            b.pause(0.001)
+            bot.pause(0.001)
 
         # Seed initialization timed out, reset and try again
         if not ok:
@@ -98,13 +92,13 @@ while (
             consecutiveFailures += 1
             tic = 0
             toc = 0
-            restart()
-            b.pause(1)
+            bot.restart_game()
+            bot.pause(1)
             resetTime = time()
             continue
 
         # Collect data
-        initialSeed = b.getInitialSeed()
+        initialSeed = bot.read_initial_seed()
         seedsCounter += 1
         print(
             f"{seedsCounter:04d} - {initialSeed:04X} | {APressValue} ({(toc - tic):.4f})"
@@ -123,16 +117,16 @@ while (
         consecutiveFailures = 0
         tic = 0
         toc = 0
-        restart()
+        bot.restart_game()
         resetTime = time()
     elif VBlankCounter > APressValue and tic != 0:
         print("Missed frame to press A")
         consecutiveFailures += 1
         tic = 0
         toc = 0
-        restart()
-        b.pause(1)
+        bot.restart_game()
+        bot.pause(1)
         resetTime = time()
         continue
 
-    b.pause(0.001)
+    bot.pause(0.001)

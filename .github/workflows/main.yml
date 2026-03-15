@@ -31,7 +31,7 @@ jobs:
           pip install cx_freeze==8.4.0
       - name: Freeze
         run: |
-          cxfreeze --script FRLGSwitchSeedFarmer.py --target-dir dist --target-name=frlg_switch_seed_farmer
+          cxfreeze --script main.py --target-dir dist --target-name=frlg_switch_seed_farmer
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
