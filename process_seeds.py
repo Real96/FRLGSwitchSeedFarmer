@@ -4,7 +4,7 @@ from itertools import zip_longest
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
 
-SUBFRAME_MULTIPLIER = config["REAPEAT_TIMES"]
+SUBFRAME_MULTIPLIER = config["REPEAT_TIMES"]
 RAW_FILE_NAME = config["OUTPUT_FILE_NAME"]
 PROCESSED_FILENAME = config["PROCESSED_FILE_NAME"]
 
