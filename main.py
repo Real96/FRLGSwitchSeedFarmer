@@ -60,9 +60,6 @@ while (
     seeds_counter < SEEDS_TO_COLLECT
     and consecutive_failures < 5
 ):
-    
-    
-    
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
     try:
         vblank_counter = bot.read_vblank_counter()
@@ -104,9 +101,7 @@ while (
         reset_time = time()
         consecutive_failures += 1
         continue
-    bot.pause(0.001)
-    
-    
+
     # Stall until the right number of main game loops have occured 
     loop_counter = 0
     prior_blink_data = 0
@@ -149,26 +144,26 @@ while (
                         continue
                 # None of the test cases made sense, so we raise an error because we don't understand where we are in the cycle    
                 raise ValueError(f"New data {blink_data} not consistent with old data {prior_blink_data}")
-        except ValueError as e:
-            print(e)
-            tic = 0
-            toc = 0
-            bot.pause(15)
-            bot.restart_game(True)
-            reset_time = time()
-            consecutive_failures += 1
-            continue 
-        except Exception as e:
-            print(
-                "Error reading RAM, restarting the game and resetting the connection in 15 seconds"
-            )
-            tic = 0
-            toc = 0
-            bot.pause(15)
-            bot.restart_game(True)
-            reset_time = time()
-            consecutive_failures += 1
-            continue
+    except ValueError as e:
+        print(e)
+        tic = 0
+        toc = 0
+        bot.pause(15)
+        bot.restart_game(True)
+        reset_time = time()
+        consecutive_failures += 1
+        continue 
+    except Exception as e:
+        print(
+            "Error reading RAM, restarting the game and resetting the connection in 15 seconds"
+        )
+        tic = 0
+        toc = 0
+        bot.pause(15)
+        bot.restart_game(True)
+        reset_time = time()
+        consecutive_failures += 1
+        continue
 
     # A press to trigger seed
     bot.press("A")
