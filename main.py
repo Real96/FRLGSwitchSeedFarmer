@@ -151,7 +151,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                     prior_blink_data = blink_start_good_values[index]
                     loop_counter+=1
                     continue
-                    
+
                 prior_two = base >> 32
                 if prior_zero >= prior_two:
                     test_prior = base 
