@@ -88,7 +88,7 @@ while (
 
     # Stall until the BlinkPressStart task has been initialized
     try:
-        while not bot.is_blink_start_initialized():
+        while not bot.read_is_blink_start_initialized():
             bot.pause(0.001)
     # TODO: actual exception types
     except Exception:
@@ -182,7 +182,6 @@ while (
     # A press to trigger seed
     bot.press("A")
     toc = time()
-
 
     # Stall until seed is initialized
     ok = True
