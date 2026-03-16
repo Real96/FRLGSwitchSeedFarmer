@@ -55,12 +55,12 @@ for i in range(90):
         data_one ^= 1
     blink_start_good_values[i] = (data_two << 32) | (data_one << 16) | data_zero
 
-
+seed_delay = INITIAL_SEED_DELAY + seed_counter
 while (
     seeds_counter < SEEDS_TO_COLLECT
     and consecutive_failures < 5
 ):
-    seed_delay = INITIAL_SEED_DELAY + seed_counter
+    
     
     
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
@@ -236,7 +236,7 @@ while (
 
     if repeat_counter == REPEAT_TIMES:
         repeat_counter = 0
-        a_press_value += 1
+        seed_delay += 1
 
     consecutive_failures = 0
     tic = 0
