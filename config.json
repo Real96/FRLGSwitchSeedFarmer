@@ -1,7 +1,6 @@
 {
     "IP": "192.168.1.16",
-    "A_PRESS_INITIAL_VALUE": 1724,
-    "A_PRESS_UPPER_LIMIT": 4160,
+    "A_PRESS_INITIAL_VALUE": 0,
     "SEEDS_TO_COLLECT": 9748,
     "REPEAT_TIMES": 4,
     "OUTPUT_FILE_NAME": "Raw Sysbot Seeds.csv",
