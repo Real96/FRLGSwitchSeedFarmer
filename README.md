@@ -28,7 +28,7 @@ If REPEAT_MODE is set to "FIXED", will repeat each seed attempt however many tim
 Name of CSV file in which raw results will be stored. It will be saved in the same folder of the script/executable.
 
 ### PROCESSED_FILE_NAME
-Name of CSV file in which processed results will be stored. Processed results compress duplicate seed entries and provides a time estimate. Unit of time is 1/REAPEAT_TIMES GBA frames. It will be saved in the same folder of the script/executable.
+Name of CSV file in which processed results will be stored. Processed results compress duplicate seed entries and provides a time estimate. It will be saved in the same folder of the script/executable.
 
 ### PROCESSED_TIME_UNIT
 Fraction of a GBA frame you want time estimates rounded to. A value of 2 would be rounding to the nearest half-frame.
