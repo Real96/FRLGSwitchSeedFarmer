@@ -18,12 +18,13 @@ GAMES = {
         "Game": "FireRed (ENG)",
         "VBlankCounter": 0xBD68B3A4,
         "CurrentSeedAddress": 0xBD68D2D0,
-        "CurrentSeedAddress": 0x807CB65,
+        "BlinkStartValue": 0x807CB65,
     },
     0x10034D02340E000: {
         "Game": "LeafGreen (ENG)",
         "VBlankCounter": 0xBD68B3A4,
         "CurrentSeedAddress": 0x807CB65,
+        "BlinkStartValue": 0x807CB65,
     },
     0x1004B3023412000: {
         "Game": "FireRed (FRE)",
