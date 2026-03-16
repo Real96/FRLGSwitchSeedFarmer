@@ -4,7 +4,7 @@ from itertools import zip_longest
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
 
-SUBFRAME_MULTIPLIER = config["REPEAT_TIMES"]
+SUBFRAME_MULTIPLIER = config["PROCESSED_TIME_UNIT"]
 RAW_FILE_NAME = config["OUTPUT_FILE_NAME"]
 PROCESSED_FILENAME = config["PROCESSED_FILE_NAME"]
 
@@ -20,69 +20,43 @@ with open(RAW_FILE_NAME, mode="r", newline="", encoding="utf-8") as file:
     frames = [int(frame) for frame in transposed_data[1][1:]]
     times = [float(ms) for ms in transposed_data[2][1:]]
 
-
-indices = list(range(len(seeds)))
-
-positions = {}
-
-for index, seed in enumerate(seeds):
-    if seed not in positions:
-        positions[seed] = []
-
-    positions[seed].append(times[index])
-
-for _, position_list in positions.items():
-    position_list.sort()
-
 windows = {}
+compressed_frames = []
+for index in range(len(frames)):
+    frame = frames[index]
+    if frame not in windows:
+        windows[frame] = []
+        compressed_frames.append(frame)
+    windows[frame].append(seed[index])
 
-for seed, position_list in positions.items():
-    windows[seed] = []
-    running_window = []
+compressed_seeds = []
+for frame in windows:
+    window = windows[frame]
+    seed = Counter(window).most_common(1)[0]
+    compressed_seeds.append(seed)
+    
+uncompressed_index = 0
+compressed_times = []
+for compressed_index, frame in enumerate(frames):
+    t = 0
+    c = 0
+    while uncompressed_index < len(frames) and frame[uncompressed_index] == frame:
+        if compressed_seeds[compressed_index] == seeds[uncompressed_index]:
+            t+=times[uncompressed_index]
+            c+=1
+        compressed_index+=1
+    average = int(round(t/time_unit))
+    compressed_times.append(average)
 
-    for position in position_list:
-        if len(running_window) > 0 and position - running_window[-1] >= 0.024:
-            windows[seed].append(tuple(running_window))
-            running_window = []
+indices = list(range(len(compressed_frames)))
+indices.sort(key=lambda x: compressed_frames[x])
 
-        running_window.append(position)
+sorted_seeds = [f"{compressed_seeds[x]:04X}" for x in indices]
+sorted_times = [compressed_times[x] for x in indices]
+sorted_frames = [compressed_seeds[x] for x in indices]
 
-    windows[seed].append(tuple(running_window))
-
-averages = [0 for _ in range(len(seeds))]
-
-for index, seed in enumerate(seeds):
-    time = times[index]
-    window_list = windows[seed]
-
-    for window in window_list:
-        if time in window:
-            averages[index] = statistics.mean(window)
-
-indices.sort(key=lambda x: frames[x])
-indices.sort(key=lambda x: times[x])
-indices.sort(key=lambda x: averages[x])
-
-for i, avg in enumerate(averages):
-    averages[i] = int(round(avg / time_unit))
-
-sorted_seeds = [seeds[x] for x in indices]
-sorted_frames = [seeds[x] for x in indices]
-sorted_times = [times[x] for x in indices]
-sorted_averages = [averages[x] for x in indices]
-
-reduced_seeds = []
-reduced_times = []
-last_seed = None
-
-for sorted_seed, sorted_average in zip(sorted_seeds, sorted_averages):
-    if sorted_seed != last_seed:
-        reduced_seeds.append(sorted_seed)
-        reduced_times.append(sorted_average)
-        last_seed = sorted_seed
-
-column_headers = ["Seed", f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames"]
-all_data = [[f"{seed:04X}" for seed in reduced_seeds], reduced_times]
+column_headers = ["Seed", f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames", "Seed Number"]
+all_data = [sorted_seeds, sorted_times, sorted_frames]
 rows = zip_longest(*all_data, fillvalue="")
 
 with open(PROCESSED_FILENAME, "w+", newline="", encoding="utf-8") as f:
