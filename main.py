@@ -186,7 +186,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     bot.pause(3)
     ok = False
     try:
-         ok = bot.read_is_box_pointer_initialized()
+        ok = bot.read_is_box_pointer_initialized()
     # TODO: actual exception types
     except Exception:
         print(
