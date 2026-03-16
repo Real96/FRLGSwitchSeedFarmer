@@ -185,3 +185,15 @@ class SeedBot:
             int.from_bytes(self.read(self.current_seed_address + 0x10, 4), "little")
             != 0
         )
+
+    def read_is_blink_start_initialized(self):
+        return (
+            int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
+            != 0
+        )
+
+    def read_blink_start_counter(self):
+        return (
+            int.from_bytes(self.read(self.current_seed_address + 0xE8, 16), "little")
+            != 0
+        )
