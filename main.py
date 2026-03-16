@@ -12,9 +12,11 @@ REPEAT_TIMES = config["REPEAT_TIMES"]
 OUTPUT_FILE_NAME = config["OUTPUT_FILE_NAME"]
 DEBUG = config["DEBUG"]
 
+
 def signal_handler(_signal, _advances):  # CTRL+C handler
     print("Stop request")
     bot.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -56,10 +58,7 @@ for i in range(90):
 
 seed_delay = INITIAL_SEED_DELAY + seeds_counter
 
-while (
-    seeds_counter < SEEDS_TO_COLLECT
-    and consecutive_failures < 5
-):
+while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
     try:
         vblank_counter = bot.read_vblank_counter()
@@ -157,7 +156,9 @@ while (
                         continue
 
                 # None of the test cases made sense, so we raise an error because we don't understand where we are in the cycle
-                raise ValueError(f"New data {blink_data} not consistent with old data {prior_blink_data}")
+                raise ValueError(
+                    f"New data {blink_data} not consistent with old data {prior_blink_data}"
+                )
     except ValueError as e:
         print(e)
         tic = 0
