@@ -15,14 +15,14 @@ The IP address of your console (System Settings > Internet > IP address)
 ### A_PRESS_INITIAL_VALUE
 Initial value for in game frame to start recording data at. Minimum working value is 1724.
 
-### A_PRESS_UPPER_LIMIT
-Last value for in game frame to start recording data at. Maximum working value is 4160.
-
 ### SEEDS_TO_COLLECT
 Number of seeds you want to collect in this run (will either collect these, or until it reaches upper limit).
 
+### REPEAT_MODE 
+"AUTO" or "FIXED". "AUTO" will lead the program to dynamically choose how many times to repeat a given seed to resolve apparent timing issues. "FIXED" will repeat each seed a fixed number of times according to the value of REPEAT_TIMES.
+
 ### REPEAT_TIMES
-Sub-frame granualarity. Value 4 means we increment in quarter frame steps.
+If REPEAT_MODE is set to "FIXED", will repeat each seed attempt however many times this variable is set to. Ignored if REPEAT_MODE is set to "AUTO".
 
 ### OUTPUT_FILE_NAME
 Name of CSV file in which raw results will be stored. It will be saved in the same folder of the script/executable.
