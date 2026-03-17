@@ -207,6 +207,9 @@ class SeedBot:
             int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
             == self.blink_start_value
         )
+        
+    def read_task_two_pointer(self):
+        return int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
 
     def read_blink_start_counter(self):
         return int.from_bytes(self.read(self.current_seed_address + 0xE8, 16), "little")
@@ -384,6 +387,9 @@ class SeedBotUSB:
             int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
             == self.blink_start_value
         )
+        
+    def read_task_two_pointer(self):
+        return int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
 
     def read_blink_start_counter(self):
         return int.from_bytes(self.read(self.current_seed_address + 0xE8, 16), "little")
