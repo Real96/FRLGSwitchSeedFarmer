@@ -76,7 +76,6 @@ GAMES = {
     },
 }
 
-
 class SeedBot:
     def __init__(self, ip):
         self.connect(ip)
