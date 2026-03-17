@@ -158,16 +158,16 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                     prior_one = (prior_blink_data >> 16) & 0xFFFF
 
                     if prior_one == 1:
-                        base = 0x1e00010000
+                        base = 0x1E00010000
                     else:
-                        base = 0x3c00000000
+                        base = 0x3C00000000
 
                     # There are a number of edge cases that would only happen extremely rarely if we read in the middle of the function that we test for
                     test_prior = base | prior_zero
 
                     if blink_data == test_prior:
                         prior_blink_data = blink_start_good_values[index]
-                        loop_counter+=1
+                        loop_counter += 1
                         continue
 
                     prior_zero += 1

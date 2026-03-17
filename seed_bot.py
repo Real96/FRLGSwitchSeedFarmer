@@ -390,12 +390,12 @@ class SeedBotUSB:
 
     def read_blink_start_counter(self):
         return int.from_bytes(self.read(self.current_seed_address + 0xE8, 16), "little")
-        
+
     def is_title_screen_scene_run(self):
         return (
             int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
             == 3
         )
-        
+
     def read_first_task_data(self):
         return int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
