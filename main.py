@@ -1,11 +1,9 @@
 import signal, json, csv, os
 from time import time
-from seed_bot import SeedBotUSB
+from seed_bot import SeedBot, SeedBotUSB
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
-
-bot = SeedBotUSB()
 INITIAL_SEED_DELAY = config["A_PRESS_INITIAL_VALUE"]
 SEEDS_TO_COLLECT = config["SEEDS_TO_COLLECT"]
 REPEAT_MODE = config["REPEAT_MODE"]
@@ -20,8 +18,11 @@ else:
     )
 
 OUTPUT_FILE_NAME = config["OUTPUT_FILE_NAME"]
+USB = config["USB"]
 DEBUG = config["DEBUG"]
 EMUNAND = config["EMUNAND"]
+
+bot = SeedBotUSB() if USB else SeedBot(config["IP"])
 
 def signal_handler(_signal, _advances):  # CTRL+C handler
     print("Stop request")
