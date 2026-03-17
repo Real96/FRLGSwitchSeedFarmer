@@ -1,11 +1,11 @@
 import signal, json, csv, os
 from time import time
-from seed_bot import SeedBot
+from seed_bot import SeedBotUSB
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
 
-bot = SeedBot(config["IP"])
+bot = SeedBotUSB()
 INITIAL_SEED_DELAY = config["A_PRESS_INITIAL_VALUE"]
 SEEDS_TO_COLLECT = config["SEEDS_TO_COLLECT"]
 REPEAT_MODE = config["REPEAT_MODE"]
