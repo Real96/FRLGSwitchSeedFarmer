@@ -13,22 +13,25 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 The IP address of your console (System Settings > Internet > IP address)
 
 ### A_PRESS_INITIAL_VALUE
-Initial value for in game frame to start recording data at. Minimum working value is 1724.
-
-### A_PRESS_UPPER_LIMIT
-Last value for in game frame to start recording data at. Maximum working value is 4160.
+Initial value for in game seed to start recording data at. Note that a value of 0 will still miss the first 1-2 seeds in a column due to the triggering condition. This may be improved in a future version.
 
 ### SEEDS_TO_COLLECT
-Number of seeds you want to collect in this run (will either collect these, or until it reaches upper limit).
+Bot will run until this many seeds have been collected or it detects the title screen has looped. This number includes seed duplicates due to repeating the same frame. The recommended value with "AUTO" mode is 5500 for a full column run.
+
+### REPEAT_MODE 
+"AUTO" or "FIXED". "AUTO" will lead the program to dynamically choose how many times to repeat a given seed to resolve apparent timing issues. "FIXED" will repeat each seed a fixed number of times according to the value of REPEAT_TIMES.
 
 ### REPEAT_TIMES
-Sub-frame granualarity. Value 4 means we increment in quarter frame steps.
+If REPEAT_MODE is set to "FIXED", will repeat each seed attempt however many times this variable is set to. Ignored if REPEAT_MODE is set to "AUTO".
 
 ### OUTPUT_FILE_NAME
 Name of CSV file in which raw results will be stored. It will be saved in the same folder of the script/executable.
 
 ### PROCESSED_FILE_NAME
-Name of CSV file in which processed results will be stored. Processed results compress duplicate seed entries and provides a time estimate. Unit of time is 1/REAPEAT_TIMES GBA frames. It will be saved in the same folder of the script/executable.
+Name of CSV file in which processed results will be stored. Processed results compress duplicate seed entries and provides a time estimate. It will be saved in the same folder of the script/executable.
+
+### PROCESSED_TIME_UNIT
+Fraction of a GBA frame you want time estimates rounded to. A value of 2 would be rounding to the nearest half-frame.
 
 ### DEBUG
 Enable or disable debug printing.
