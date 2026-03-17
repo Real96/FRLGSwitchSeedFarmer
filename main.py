@@ -91,7 +91,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # TODO: actual exception types
     except Exception:
         print(
-            "Error reading RAM, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for vblank, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
         bot.restart_game(True)
@@ -108,7 +108,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # TODO: actual exception types
     except Exception:
         print(
-            "Error reading RAM, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for blink start task, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
         bot.restart_game(True)
@@ -179,7 +179,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         continue
     except Exception as e:
         print(
-            "Error reading RAM, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for blink start state, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
         bot.restart_game(True)
@@ -203,7 +203,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # TODO: actual exception types
     except Exception:
         print(
-            "Error reading RAM, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for box pointer, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
         bot.restart_game(True)
@@ -225,7 +225,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # TODO: actual exception types
     except Exception:
         print(
-            "Error reading RAM, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for seed, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
         bot.restart_game(True)
@@ -257,7 +257,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
     consecutive_failures = 0
     bot.restart_game()
-
+    
     if EMUNAND:
         bot.pause(1.6)
 
