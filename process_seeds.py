@@ -46,7 +46,7 @@ for compressed_index, frame in enumerate(compressed_frames):
             t+=times[uncompressed_index]
             c+=1
         uncompressed_index+=1
-    
+    t/=c
     average = int(round(t/time_unit))
     compressed_times.append(average)
 
