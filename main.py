@@ -191,7 +191,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     toc = time()
 
     # Stall until seed is initialized
-    bot.pause(2.25)
+    bot.pause(3)
     ok = False
 
     try:
