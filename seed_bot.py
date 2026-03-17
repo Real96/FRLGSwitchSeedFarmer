@@ -220,7 +220,6 @@ class SeedBot:
     def read_first_task_data(self):
         return int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
 
-
 class SeedBotUSB:
     def __init__(self):
         self.connect()
@@ -320,8 +319,6 @@ class SeedBotUSB:
     # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
     def read(self, address, size):
         self.send_command(f"peek 0x{address:X} 0x{size:X}")
-        # TODO: sensible reading and not an arbitrary wait
-        #sleep(size / 0x8000)
 
         return self.read_usb()
 
@@ -390,12 +387,12 @@ class SeedBotUSB:
 
     def read_blink_start_counter(self):
         return int.from_bytes(self.read(self.current_seed_address + 0xE8, 16), "little")
-        
+
     def is_title_screen_scene_run(self):
         return (
             int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
             == 3
         )
-        
+
     def read_first_task_data(self):
         return int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")

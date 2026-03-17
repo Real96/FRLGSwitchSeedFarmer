@@ -80,7 +80,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     tic = 0
     toc = 0
     bot.pause(1)
-    
+
     try:
         vblank_counter = bot.read_vblank_counter()
 
@@ -109,7 +109,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
     # Stall until the BlinkPressStart task has been initialized
     bot.pause(24)
-    
+
     if seed_delay == 0:
         try:
             first_task_data = bot.read_first_task_data()
@@ -119,7 +119,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 if DEBUG:
                     print(hex(first_task_data))
                 first_task_data = bot.read_first_task_data()
-                
+
         except Exception:
             print(
                 "Error reading RAM for title screen scene, restarting the game and resetting the connection in 15 seconds"
@@ -129,7 +129,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             reset_time = time()
             consecutive_failures += 1
             continue
-        
+
     else:
         try:
             while not bot.read_is_blink_start_initialized():
@@ -165,16 +165,16 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                     prior_one = (prior_blink_data >> 16) & 0xFFFF
 
                     if prior_one == 1:
-                        base = 0x1e00010000
+                        base = 0x1E00010000
                     else:
-                        base = 0x3c00000000
+                        base = 0x3C00000000
 
                     # There are a number of edge cases that would only happen extremely rarely if we read in the middle of the function that we test for
                     test_prior = base | prior_zero
 
                     if blink_data == test_prior:
                         prior_blink_data = blink_start_good_values[index]
-                        loop_counter+=1
+                        loop_counter += 1
                         continue
 
                     prior_zero += 1
@@ -228,7 +228,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 ok = False
                 break
                 bot.pause(0.2)
-        
+
     # TODO: actual exception types
     except Exception:
         print(
@@ -286,7 +286,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
     consecutive_failures = 0
     bot.restart_game()
-    
+
     if EMUNAND:
         bot.pause(1.6)
 
