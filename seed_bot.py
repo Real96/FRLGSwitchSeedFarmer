@@ -247,7 +247,6 @@ class SeedBotUSB:
         print("USB Bot Connected")
 
         self.send_command("configure echoCommands 0")
-        self.send_command("configure mainLoopSleepTime 0")
 
     def detect_game(self):
         title_id = self.get_title_id()
