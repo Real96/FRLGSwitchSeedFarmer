@@ -10,7 +10,7 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 
 ## Settings
 ### IP
-The IP address of your console (System Settings > Internet > IP address)
+The IP address of your console (System Settings > Internet > IP address). Used only if `USB` setting is set to `false`.
 
 ### A_PRESS_INITIAL_VALUE
 Initial value for in game seed to start recording data at. A value of 0 will begin at the start of a column.
@@ -36,8 +36,17 @@ Name of CSV file in which processed results will be stored. Processed results co
 ### PROCESSED_TIME_UNIT
 Fraction of a GBA frame you want time estimates rounded to. A value of 2 would be rounding to the nearest half-frame.
 
+### USB
+Set this to `true` if you want to run the bot through USB ports (best option if you don't have an ethernet dongle for connecting the switch to the router). Set this to `false` if you want to run the bot though Internet (WiFi/Ethernet).
+
+### USB_INDEX
+Index of the Switch connected to the PC that will be attached to the bot. Used only if `USB` setting is set to `true`
+
+### EMUNAND
+Set this to `true` only if you are on EmuNand. This will handle slow games booting/closing timing.
+
 ### DEBUG
-Enable or disable debug printing.
+Set this to `true` to enable debug printing. Set this to `false` to disable it.
 
 ## Credits:
 * [olliz0r](https://github.com/olliz0r) for [sys-botbase](https://github.com/olliz0r/sys-botbase)

@@ -3,12 +3,13 @@
     "A_PRESS_INITIAL_VALUE": 0,
     "SEEDS_TO_COLLECT": 5500,
 	"REPEAT_MODE": "AUTO",
-    "REPEAT_TIMES": 4, 
+    "REPEAT_TIMES": 4,
 	"SEED_BUTTON": "A",
     "OUTPUT_FILE_NAME": "Raw Sysbot Seeds.csv",
     "PROCESSED_FILE_NAME": "Processed Sysbot Seeds.csv",
 	"PROCESSED_TIME_UNIT": 16,
     "USB": false,
+    "USB_INDEX": 1,
     "EMUNAND": false,
     "DEBUG": false
 }

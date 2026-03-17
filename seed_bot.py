@@ -224,19 +224,23 @@ class SeedBot:
         return int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
 
 class SeedBotUSB:
-    def __init__(self):
-        self.connect()
+    def __init__(self, index):
+        self.index = index
+        self.connect(self.index)
         self.detect_game()
 
-    def connect(self):
-        self.dev = usb.core.find(idVendor=0x057E, idProduct=0x3000)
+    def connect(self, index):
+        devices = list(usb.core.find(find_all=True, idVendor=0x057E, idProduct=0x3000))
 
-        if self.dev is None:
-            raise Exception("Switch USB device not found")
+        if not devices:
+            raise Exception("No Switch USB devices found")
 
-        self.dev.set_configuration()
+        if index >= len(devices):
+            raise Exception(f"The index {index} is higher than the numer of Switch USB devices found.")
 
-        cfg = self.dev.get_active_configuration()
+        self.device = devices[index]
+        self.device.set_configuration()
+        cfg = self.device.get_active_configuration()
         intf = cfg[(0, 0)]
 
         self.ep_out = usb.util.find_descriptor(
@@ -256,7 +260,7 @@ class SeedBotUSB:
         if self.ep_out is None or self.ep_in is None:
             raise Exception("USB endpoints not found")
 
-        print("USB Bot Connected")
+        print("Bot Connected")
 
     def detect_game(self):
         title_id = self.get_title_id()
@@ -303,8 +307,8 @@ class SeedBotUSB:
         print("Exiting...")
         self.pause(0.5)
         self.detach()
-        usb.util.dispose_resources(self.dev)
-        print("USB Bot Disconnected")
+        usb.util.dispose_resources(self.device)
+        print("Bot Disconnected")
 
         if exitapp:
             sys.exit(0)
@@ -364,7 +368,7 @@ class SeedBotUSB:
         if should_reconnect:
             self.close(False)
             self.pause(1.5)
-            self.connect()
+            self.connect(self.index)
             self.detect_game()
 
     def read_initial_seed(self):
