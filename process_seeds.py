@@ -36,16 +36,16 @@ for frame in windows:
     seed = Counter(window).most_common(1)[0][0]
     compressed_seeds.append(seed)
     
-uncompressed_index = 0
+
 compressed_times = []
 for compressed_index, frame in enumerate(compressed_frames):
     t = 0
     c = 0
-    while uncompressed_index < len(frames) and frames[uncompressed_index] == frame:
-        if compressed_seeds[compressed_index] == seeds[uncompressed_index]:
+    target_seed = compressed_seeds[compressed_index]
+    for uncompressed_index in range(len(frames)):
+        if target_seed == seeds[uncompressed_index] and frames[uncompressed_index] == frame:
             t+=times[uncompressed_index]
             c+=1
-        uncompressed_index+=1
     t/=c
     average = int(round(t/time_unit))
     compressed_times.append(average)
