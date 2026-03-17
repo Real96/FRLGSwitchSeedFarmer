@@ -71,7 +71,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     prior_blink_data = 0
     tic = 0
     toc = 0
-
+    bot.pause(0.001)
     try:
         vblank_counter = bot.read_vblank_counter()
         while vblank_counter != LOW_VBLANK_HERALDING:
