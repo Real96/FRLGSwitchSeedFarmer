@@ -49,10 +49,10 @@ for compressed_index, frame in enumerate(compressed_frames):
 
     for uncompressed_index in range(len(frames)):
         if target_seed == seeds[uncompressed_index] and frames[uncompressed_index] == frame:
-            t+=times[uncompressed_index]
-            c+=1
+            t += times[uncompressed_index]
+            c += 1
 
-    t/=c
+    t /= c
     average = int(round(t/time_unit))
     compressed_times.append(average)
 
