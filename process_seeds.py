@@ -28,24 +28,25 @@ for index in range(len(frames)):
     if frame not in windows:
         windows[frame] = []
         compressed_frames.append(frame)
-    windows[frame].append(seed[index])
+    windows[frame].append(seeds[index])
 
 compressed_seeds = []
 for frame in windows:
     window = windows[frame]
-    seed = Counter(window).most_common(1)[0]
+    seed = Counter(window).most_common(1)[0][0]
     compressed_seeds.append(seed)
     
 uncompressed_index = 0
 compressed_times = []
-for compressed_index, frame in enumerate(frames):
+for compressed_index, frame in enumerate(compressed_frames):
     t = 0
     c = 0
-    while uncompressed_index < len(frames) and frame[uncompressed_index] == frame:
+    while uncompressed_index < len(frames) and frames[uncompressed_index] == frame:
         if compressed_seeds[compressed_index] == seeds[uncompressed_index]:
             t+=times[uncompressed_index]
             c+=1
-        compressed_index+=1
+        uncompressed_index+=1
+    
     average = int(round(t/time_unit))
     compressed_times.append(average)
 
@@ -54,7 +55,7 @@ indices.sort(key=lambda x: compressed_frames[x])
 
 sorted_seeds = [f"{compressed_seeds[x]:04X}" for x in indices]
 sorted_times = [compressed_times[x] for x in indices]
-sorted_frames = [compressed_seeds[x] for x in indices]
+sorted_frames = [compressed_frames[x] for x in indices]
 
 column_headers = ["Seed", f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames", "Seed Number"]
 all_data = [sorted_seeds, sorted_times, sorted_frames]
