@@ -21,6 +21,7 @@ else:
 
 OUTPUT_FILE_NAME = config["OUTPUT_FILE_NAME"]
 DEBUG = config["DEBUG"]
+EMUNAND = config["EMUNAND"]
 
 def signal_handler(_signal, _advances):  # CTRL+C handler
     print("Stop request")
@@ -191,7 +192,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     toc = time()
 
     # Stall until seed is initialized
-    bot.pause(3)
+    bot.pause(3 if EMUNAND else 2.25)
     ok = False
 
     try:
