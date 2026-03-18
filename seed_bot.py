@@ -176,8 +176,8 @@ class SeedBot:
         self.pause(0.2)
         self.click("A")
 
-    def restart_game(self, should_reconnect=False):
-        self.release("A")
+    def restart_game(self, should_reconnect=False, release="A"):
+        self.release(release)
         self.quit_game()
         self.enter_game()
 
@@ -360,8 +360,8 @@ class SeedBotUSB:
         self.pause(0.2)
         self.click("A")
 
-    def restart_game(self, should_reconnect=False):
-        self.release("A")
+    def restart_game(self, should_reconnect=False, release="A"):
+        self.release(release)
         self.quit_game()
         self.enter_game()
 
