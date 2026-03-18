@@ -140,10 +140,10 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             if DEBUG:
                 print(f"Task two function is {hex(task_two_pointer)}")
             while task_two_pointer != bot.blink_start_value:
+                bot.pause(0.001)
+                task_two_pointer = bot.read_task_two_pointer()
                 if DEBUG:
                     print(f"Task two function is {hex(task_two_pointer)}")
-                bot.pause(0.001)
-            task_two_pointer = bot.read_task_two_pointer()
                 
         # TODO: actual exception types
         except Exception:
