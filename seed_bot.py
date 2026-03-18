@@ -1,5 +1,5 @@
-import usb
 import sys, socket, binascii
+from usb import core, util
 from time import sleep
 
 GAMES = {
@@ -231,7 +231,7 @@ class SeedBotUSB:
         self.detect_game()
 
     def connect(self, index):
-        devices = list(usb.core.find(find_all=True, idVendor=0x057E, idProduct=0x3000))
+        devices = list(core.find(find_all=True, idVendor=0x057E, idProduct=0x3000))
 
         if not devices:
             raise Exception("No Switch USB devices found")
@@ -244,18 +244,18 @@ class SeedBotUSB:
         cfg = self.device.get_active_configuration()
         intf = cfg[(0, 0)]
 
-        self.ep_out = usb.util.find_descriptor(
+        self.ep_out = util.find_descriptor(
             intf,
             custom_match=lambda e:
-            usb.util.endpoint_direction(e.bEndpointAddress)
-            == usb.util.ENDPOINT_OUT
+            util.endpoint_direction(e.bEndpointAddress)
+            == util.ENDPOINT_OUT
         )
 
-        self.ep_in = usb.util.find_descriptor(
+        self.ep_in = util.find_descriptor(
             intf,
             custom_match=lambda e:
-            usb.util.endpoint_direction(e.bEndpointAddress)
-            == usb.util.ENDPOINT_IN
+            util.endpoint_direction(e.bEndpointAddress)
+            == util.ENDPOINT_IN
         )
 
         if self.ep_out is None or self.ep_in is None:
@@ -308,7 +308,7 @@ class SeedBotUSB:
         print("Exiting...")
         self.pause(0.5)
         self.detach()
-        usb.util.dispose_resources(self.device)
+        util.dispose_resources(self.device)
         print("Bot Disconnected")
 
         if exitapp:
