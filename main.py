@@ -86,7 +86,8 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
     try:
         vblank_counter = bot.read_vblank_counter()
-
+        if DEBUG:
+            print(f"VBlank: {vblank_counter}")
         while vblank_counter != LOW_VBLANK_HERALDING:
             if time() - reset_time > 10:
                 print("Failed to boot")
@@ -136,6 +137,8 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     else:
         try:
             task_two_pointer = bot.read_task_two_pointer()
+            if DEBUG:
+                print(f"Task two function is {hex(task_two_pointer)}")
             while task_two_pointer != bot.blink_start_value:
                 if DEBUG:
                     print(f"Task two function is {hex(task_two_pointer)}")
