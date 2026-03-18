@@ -112,7 +112,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         continue
 
     # Stall until the BlinkPressStart task has been initialized
-    bot.pause(24)
+    bot.pause(23.5)
 
     if seed_delay == 0:
         try:
