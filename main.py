@@ -88,6 +88,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         vblank_counter = bot.read_vblank_counter()
         if DEBUG:
             print(f"VBlank: {vblank_counter}")
+
         while vblank_counter != LOW_VBLANK_HERALDING:
             if time() - reset_time > 10:
                 print("Failed to boot")
@@ -121,11 +122,14 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             while first_task_data != 3:
                 if time() - tic > 25:
                     raise TimeoutError("Timed out waiting to detect last scene of Fadein")
+
                 bot.pause(0.001)
+
                 if DEBUG:
                     print(hex(first_task_data))
+
                 first_task_data = bot.read_first_task_data()
-        
+
         except TimeoutError as e:
             print(e)
             bot.pause(15)
@@ -146,13 +150,17 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     else:
         try:
             task_two_pointer = bot.read_task_two_pointer()
+
             if DEBUG:
                 print(f"Task two function is {hex(task_two_pointer)}")
+
             while task_two_pointer != bot.blink_start_value:
                 if time() - tic > 25:
                     raise TimeoutError("Timed out waiting to detect BLINK_START task")
+
                 bot.pause(0.001)
                 task_two_pointer = bot.read_task_two_pointer()
+
                 if DEBUG:
                     print(f"Task two function is {hex(task_two_pointer)}")
                 
