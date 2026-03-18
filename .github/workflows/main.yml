@@ -27,8 +27,9 @@ jobs:
             **/requirements*.txt
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
           pip install cx_freeze==8.4.0
+          pip install -r requirements.txt
           
         shell: bash
       - name: Freeze
