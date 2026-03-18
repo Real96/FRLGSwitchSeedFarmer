@@ -2,7 +2,7 @@
 Python script for farming FRLG Initial Seeds on CFWed Switch
 
 ## Usage:
-1) Install [sys-botbase](https://github.com/olliz0r/sys-botbase?tab=readme-ov-file#installation) and start it
+1) Install [sys-botbase](https://github.com/olliz0r/sys-botbase?tab=readme-ov-file#installation) for WiFi setup or [sys-botbase-cpp](https://github.com/PokemonAutomation/sys-botbase-cpp?tab=readme-ov-file#installation) for USB setup, and start it
 3) Edit all the settings inside the `config.json` file
 4) Connect the Switch and the PC to the same WiFi/Ethernet connection
 5) Start Pokémon FireRed or Pokémon LeafGreen
