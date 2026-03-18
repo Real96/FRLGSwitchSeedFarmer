@@ -119,11 +119,20 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             first_task_data = bot.read_first_task_data()
 
             while first_task_data != 3:
+                if time() - tic > 25:
+                    raise TimeoutError("Timed out waiting to detect last scene of Fadein")
                 bot.pause(0.001)
                 if DEBUG:
                     print(hex(first_task_data))
                 first_task_data = bot.read_first_task_data()
-
+        
+        except TimeoutError as e:
+            print(e)
+            bot.pause(15)
+            bot.restart_game(True)
+            reset_time = time()
+            consecutive_failures += 1
+            continue           
         except Exception:
             print(
                 "Error reading RAM for title screen scene, restarting the game and resetting the connection in 15 seconds"
@@ -140,12 +149,20 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             if DEBUG:
                 print(f"Task two function is {hex(task_two_pointer)}")
             while task_two_pointer != bot.blink_start_value:
+                if time() - tic > 25:
+                    raise TimeoutError("Timed out waiting to detect BLINK_START task")
                 bot.pause(0.001)
                 task_two_pointer = bot.read_task_two_pointer()
                 if DEBUG:
                     print(f"Task two function is {hex(task_two_pointer)}")
                 
-        # TODO: actual exception types
+        except TimeoutError as e:
+            print(e)
+            bot.pause(15)
+            bot.restart_game(True)
+            reset_time = time()
+            consecutive_failures += 1
+            continue  
         except Exception:
             print(
                 "Error reading RAM for blink start task, restarting the game and resetting the connection in 15 seconds"
