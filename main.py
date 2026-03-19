@@ -12,7 +12,7 @@ SEED_BUTTON = config["SEED_BUTTON"]
 
 if SEED_BUTTON not in ["A", "X", "L", "START", "PLUS"]:
     raise ValueError(
-    f"{SEED_BUTTON} is not a valid seed button. Must be one of 'A', 'START', 'X', 'PLUS', or 'L'."
+        f"{SEED_BUTTON} is not a valid seed button. Must be one of 'A', 'START', 'X', 'PLUS', or 'L'."
     )
 
 if SEED_BUTTON == "START":
@@ -24,7 +24,7 @@ elif REPEAT_MODE == "AUTO":
     REPEAT_TIMES = None
 else:
     raise ValueError(
-    f"{REPEAT_MODE} is an invalid value for REPEAT_MODE. Acceptable values are 'AUTO' or 'FIXED'."
+        f"{REPEAT_MODE} is an invalid value for REPEAT_MODE. Acceptable values are 'AUTO' or 'FIXED'."
     )
 
 OUTPUT_FILE_NAME = config["OUTPUT_FILE_NAME"]
@@ -32,11 +32,17 @@ USB = config["USB"]
 DEBUG = config["DEBUG"]
 EMUNAND = config["EMUNAND"]
 
-bot = SeedBotUSB(config["USB_INDEX"], config["SKIP_PROFILE"]) if USB else SeedBot(config["IP"], config["SKIP_PROFILE"])
+bot = (
+    SeedBotUSB(config["USB_INDEX"], config["SKIP_PROFILE"])
+    if USB
+    else SeedBot(config["IP"], config["SKIP_PROFILE"])
+)
+
 
 def signal_handler(_signal, _advances):  # CTRL+C handler
     print("Stop request")
     bot.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -121,7 +127,9 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
             while first_task_data != 3:
                 if time() - tic > 25:
-                    raise TimeoutError("Timed out waiting to detect last scene of Fadein")
+                    raise TimeoutError(
+                        "Timed out waiting to detect last scene of Fadein"
+                    )
 
                 bot.pause(0.001)
 
@@ -136,7 +144,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
             reset_time = time()
             consecutive_failures += 1
-            continue           
+            continue
         except Exception:
             print(
                 "Error reading RAM for title screen scene, restarting the game and resetting the connection in 15 seconds"
@@ -163,14 +171,14 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
                 if DEBUG:
                     print(f"Task two function is {hex(task_two_pointer)}")
-                
+
         except TimeoutError as e:
             print(e)
             bot.pause(15)
             bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
             reset_time = time()
             consecutive_failures += 1
-            continue  
+            continue
         except Exception:
             print(
                 "Error reading RAM for blink start task, restarting the game and resetting the connection in 15 seconds"
@@ -314,7 +322,11 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             repeat_counter = 0
             seed_delay += 1
     else:
-        if len(current_seeds) == 0 or len(current_seeds) == 1 and current_seeds[0] != initial_seed:
+        if (
+            len(current_seeds) == 0
+            or len(current_seeds) == 1
+            and current_seeds[0] != initial_seed
+        ):
             current_seeds.append(initial_seed)
         else:
             seed_delay += 1

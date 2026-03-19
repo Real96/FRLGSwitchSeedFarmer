@@ -7,13 +7,13 @@ GAMES = {
         "Game": "FireRed (JPN)",
         "VBlankCounter": 0xBD68B304,
         "CurrentSeedAddress": 0xBD68D230,
-        "BlinkStartValue": 0x807C3A1
+        "BlinkStartValue": 0x807C3A1,
     },
     0x100F1E0233FA000: {
         "Game": "LeafGreen (JPN)",
         "VBlankCounter": 0xBD68B304,
         "CurrentSeedAddress": 0xBD68D230,
-        "BlinkStartValue": 0x807C3A1
+        "BlinkStartValue": 0x807C3A1,
     },
     0x100554023408000: {
         "Game": "FireRed (ENG)",
@@ -31,51 +31,52 @@ GAMES = {
         "Game": "FireRed (FRE)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CC6D
+        "BlinkStartValue": 0x807CC6D,
     },
     0x10087C02342E000: {
         "Game": "LeafGreen (FRE)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CC6D
+        "BlinkStartValue": 0x807CC6D,
     },
     0x10092302342A000: {
         "Game": "FireRed (ITA)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CB99
+        "BlinkStartValue": 0x807CB99,
     },
     0x1005C7023432000: {
         "Game": "LeafGreen (ITA)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CB99
+        "BlinkStartValue": 0x807CB99,
     },
     0x1007F8023416000: {
         "Game": "FireRed (GER)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CBAD
+        "BlinkStartValue": 0x807CBAD,
     },
     0x100FD6023430000: {
         "Game": "LeafGreen (GER)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CBAD
+        "BlinkStartValue": 0x807CBAD,
     },
     0x100EB702342C000: {
         "Game": "FireRed (SPA)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CC81
+        "BlinkStartValue": 0x807CC81,
     },
     0x1002B5023434000: {
         "Game": "LeafGreen (SPA)",
         "VBlankCounter": 0xBD68B2F4,
         "CurrentSeedAddress": 0xBD68D220,
-        "BlinkStartValue": 0x807CC81
+        "BlinkStartValue": 0x807CC81,
     },
 }
+
 
 class SeedBot:
     def __init__(self, ip, skip_profile):
@@ -90,7 +91,7 @@ class SeedBot:
         self.s.connect((self.ip, 6000))
         print("Bot Connected")
         self.send_command("configure echoCommands 0")
-        self.send_command('configure mainLoopSleepTime 0')
+        self.send_command("configure mainLoopSleepTime 0")
 
     def detect_game(self):
         title_id = self.get_title_id()
@@ -215,21 +216,22 @@ class SeedBot:
             int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
             == self.blink_start_value
         )
-        
+
     def read_task_two_pointer(self):
         return int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
 
     def read_blink_start_counter(self):
         return int.from_bytes(self.read(self.current_seed_address + 0xE8, 16), "little")
-        
+
     def is_title_screen_scene_run(self):
         return (
             int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
             == 3
         )
-        
+
     def read_first_task_data(self):
         return int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
+
 
 class SeedBotUSB:
     def __init__(self, index, skip_profile):
@@ -245,7 +247,9 @@ class SeedBotUSB:
             raise Exception("No Switch USB devices found")
 
         if index >= len(devices):
-            raise Exception(f"The index {index} is higher than the numer of Switch USB devices found.")
+            raise Exception(
+                f"The index {index} is higher than the numer of Switch USB devices found."
+            )
 
         self.device = devices[index]
         self.device.set_configuration()
@@ -254,16 +258,14 @@ class SeedBotUSB:
 
         self.ep_out = util.find_descriptor(
             intf,
-            custom_match=lambda e:
-            util.endpoint_direction(e.bEndpointAddress)
-            == util.ENDPOINT_OUT
+            custom_match=lambda e: util.endpoint_direction(e.bEndpointAddress)
+            == util.ENDPOINT_OUT,
         )
 
         self.ep_in = util.find_descriptor(
             intf,
-            custom_match=lambda e:
-            util.endpoint_direction(e.bEndpointAddress)
-            == util.ENDPOINT_IN
+            custom_match=lambda e: util.endpoint_direction(e.bEndpointAddress)
+            == util.ENDPOINT_IN,
         )
 
         if self.ep_out is None or self.ep_in is None:
@@ -405,7 +407,7 @@ class SeedBotUSB:
             int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
             == self.blink_start_value
         )
-        
+
     def read_task_two_pointer(self):
         return int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
 

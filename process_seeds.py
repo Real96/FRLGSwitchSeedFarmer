@@ -48,12 +48,15 @@ for compressed_index, frame in enumerate(compressed_frames):
     target_seed = compressed_seeds[compressed_index]
 
     for uncompressed_index in range(len(frames)):
-        if target_seed == seeds[uncompressed_index] and frames[uncompressed_index] == frame:
+        if (
+            target_seed == seeds[uncompressed_index]
+            and frames[uncompressed_index] == frame
+        ):
             t += times[uncompressed_index]
             c += 1
 
     t /= c
-    average = int(round(t/time_unit))
+    average = int(round(t / time_unit))
     compressed_times.append(average)
 
 indices = list(range(len(compressed_frames)))
@@ -63,7 +66,11 @@ sorted_seeds = [f"{compressed_seeds[x]:04X}" for x in indices]
 sorted_times = [compressed_times[x] for x in indices]
 sorted_frames = [compressed_frames[x] for x in indices]
 
-column_headers = ["Seed", f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames", "Seed Number"]
+column_headers = [
+    "Seed",
+    f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames",
+    "Seed Number",
+]
 all_data = [sorted_seeds, sorted_times, sorted_frames]
 rows = zip_longest(*all_data, fillvalue="")
 
