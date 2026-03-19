@@ -5,7 +5,7 @@ from seed_bot import SeedBot, SeedBotUSB
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
 
-INITIAL_SEED_DELAY = config["A_PRESS_INITIAL_VALUE"]
+INITIAL_SEED_DELAY = config["FIRST_SEED_TO_COLLECT"]
 SEEDS_TO_COLLECT = config["SEEDS_TO_COLLECT"]
 REPEAT_MODE = config["REPEAT_MODE"]
 SEED_BUTTON = config["SEED_BUTTON"]

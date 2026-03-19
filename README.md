@@ -12,11 +12,11 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 ### IP
 The IP address of your console (`System Settings` > `Internet` > `IP address`). Used only if `USB` setting is set to `false`.
 
-### A_PRESS_INITIAL_VALUE
-Initial value for in game seed to start recording data at. A value of 0 will begin at the start of a column.
+### FIRST_SEED_TO_COLLECT
+Used to specify where in a column to start farming seeds. A value of 0 will begin at the start of a column. A full column is ~2300-2400 seeds.
 
 ### SEEDS_TO_COLLECT
-Bot will run until this many seeds have been collected or it detects the title screen has looped. This number includes seed duplicates due to repeating the same frame. The recommended value with "AUTO" mode is 5000 for a full column run.
+Bot will run until this many seeds have been collected or it detects the title screen has looped. This number includes seed duplicates due to repeating the same frame. The recommended value with "AUTO" mode is 5500 for a full column run.
 
 ### SEED_BUTTON
 The button that will be pressed and held on the title screen to get a seed. Must be one of ["A", "X", "L", "START", "PLUS"]. "START" is automatically remapped to "X". Note that "L" will be accepted, but will only work for you if your game is in L=A mode.
