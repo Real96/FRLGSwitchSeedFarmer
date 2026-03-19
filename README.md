@@ -10,7 +10,7 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 
 ## Settings
 ### IP
-The IP address of your console (System Settings > Internet > IP address). Used only if `USB` setting is set to `false`.
+The IP address of your console (`System Settings` > `Internet` > `IP address`). Used only if `USB` setting is set to `false`.
 
 ### A_PRESS_INITIAL_VALUE
 Initial value for in game seed to start recording data at. A value of 0 will begin at the start of a column.
@@ -44,6 +44,9 @@ Index of the Switch connected to the PC that will be attached to the bot. Used o
 
 ### EMUNAND
 Set this to `true` only if you are on EmuNand. This will handle slow games booting/closing timing.
+
+### SKIP_PROFILE
+Set this to `true` when you have the option `Skip Selection Screen` (`Settings` > `Users`) turned on. This will avoid some unnecessary A presses.
 
 ### DEBUG
 Set this to `true` to enable debug printing. Set this to `false` to disable it.
