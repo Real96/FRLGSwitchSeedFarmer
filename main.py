@@ -267,6 +267,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # A press to trigger seed
     bot.press(SEED_BUTTON)
     toc = time()
+    bot.pause(2.05)
 
     # Stall until seed is initialized
     ok = True
@@ -276,7 +277,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 ok = False
                 break
 
-            bot.pause(1.075)
+            bot.pause(0.2)
 
     # TODO: actual exception types
     except Exception:
