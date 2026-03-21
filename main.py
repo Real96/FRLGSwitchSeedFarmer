@@ -80,7 +80,7 @@ for i in range(90):
 blink_start_good_values = tuple(blink_start_good_values)
 seed_delay = INITIAL_SEED_DELAY + seeds_counter
 current_seeds = []
-reset_time = time()
+reconnect = False
 
 while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
@@ -88,7 +88,10 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     prior_blink_data = 0
     tic = 0
     toc = 0
-    bot.pause(1)
+    bot.restart_game(should_reconnect = reconnect, release=SEED_BUTTON)
+    reset_time = time()
+    
+    bot.pause(6.5)   # minimum reasonable boot delay is 2.4 seconds and 2.4 seconds + 256 frames ~ 6.68 seconds
 
     try:
         vblank_counter = bot.read_vblank_counter()
@@ -100,7 +103,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 print("Failed to boot")
                 raise TimeoutError
 
-            bot.pause(0.001)
+            bot.pause(0.002)
             vblank_counter = bot.read_vblank_counter()
 
             if DEBUG:
@@ -113,13 +116,12 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             "Error reading RAM for vblank, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
-        bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-        reset_time = time()
+        reconnect = True
         consecutive_failures += 1
         continue
 
     # Stall until the BlinkPressStart task has been initialized
-    bot.pause(23.5)
+    bot.pause(24)
 
     if seed_delay == 0:
         try:
@@ -141,8 +143,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         except TimeoutError as e:
             print(e)
             bot.pause(15)
-            bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-            reset_time = time()
+            reconnect = True
             consecutive_failures += 1
             continue
         except Exception:
@@ -150,8 +151,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 "Error reading RAM for title screen scene, restarting the game and resetting the connection in 15 seconds"
             )
             bot.pause(15)
-            bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-            reset_time = time()
+            reconnect = True
             consecutive_failures += 1
             continue
 
@@ -175,8 +175,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         except TimeoutError as e:
             print(e)
             bot.pause(15)
-            bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-            reset_time = time()
+            reconnect = True
             consecutive_failures += 1
             continue
         except Exception:
@@ -184,8 +183,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 "Error reading RAM for blink start task, restarting the game and resetting the connection in 15 seconds"
             )
             bot.pause(15)
-            bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-            reset_time = time()
+            reconnect = True
             consecutive_failures += 1
             continue
 
@@ -244,10 +242,8 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                         f"New data {blink_data} not consistent with old data {prior_blink_data}"
                     )
         except ValueError as e:
-            print(e)
             bot.pause(15)
-            bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-            reset_time = time()
+            reconnect = True
             consecutive_failures += 1
             continue
         except Exception as e:
@@ -255,8 +251,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 "Error reading RAM for blink start state, restarting the game and resetting the connection in 15 seconds"
             )
             bot.pause(15)
-            bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-            reset_time = time()
+            reconnect = True
             consecutive_failures += 1
             continue
 
@@ -268,11 +263,11 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     ok = True
     try:
         while not bot.read_is_box_pointer_initialized():
-            if time() - toc > 5:
+            if time() - toc > 3:
                 ok = False
                 break
 
-            bot.pause(0.2)
+            bot.pause(1.075)
 
     # TODO: actual exception types
     except Exception:
@@ -280,8 +275,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             "Error reading RAM for box pointer, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
-        bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-        reset_time = time()
+        reconnect = True
         consecutive_failures += 1
         continue
 
@@ -302,8 +296,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             "Error reading RAM for seed, restarting the game and resetting the connection in 15 seconds"
         )
         bot.pause(15)
-        bot.restart_game(should_reconnect=True, release=SEED_BUTTON)
-        reset_time = time()
+        reconnect = True
         consecutive_failures += 1
         continue
 
@@ -334,9 +327,5 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             current_seeds = []
 
     consecutive_failures = 0
-    bot.restart_game(release=SEED_BUTTON)
+    reconnect = False
 
-    if EMUNAND:
-        bot.pause(1.6)
-
-    reset_time = time()
