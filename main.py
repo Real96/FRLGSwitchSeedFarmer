@@ -94,8 +94,8 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # Boot time measurement statistics never had a value outside range of 2.5 to 3.1 seconds
     # shift those endpoints by 100ms and round the ms per frame down/up accordingly for safety 
     # vblankCounter is reset to zero approximately 16 frames post boot by the bootup process.
-    first_read_delay = 2.4 + (LOW_VBLANK_HERALDING + 16) * 0.016 
-    vblank_timeout = 3.2 + (LOW_VBLANK_HERALDING + 16) * 0.017
+    first_read_delay = 0 + (LOW_VBLANK_HERALDING + 16) * 0.016 
+    vblank_timeout = 0.8 + (LOW_VBLANK_HERALDING + 16) * 0.017
     
     if reconnect:
         first_read_delay -= 1.5
