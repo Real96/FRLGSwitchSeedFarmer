@@ -7,6 +7,7 @@ with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
 
 
+SEED_BUTTON = config["SEED_BUTTON"]
 OUTPUT_FILE_NAME = config["OUTPUT_FILE_NAME"]
 USB = config["USB"]
 DEBUG = config["DEBUG"]
@@ -26,16 +27,16 @@ def signal_handler(_signal, _advances):  # CTRL+C handler
 signal.signal(signal.SIGINT, signal_handler)
 
 LOW_VBLANK_HERALDING = 256
-blink_start_good_values = tuple(blink_start_good_values)
-seed_delay = INITIAL_SEED_DELAY + seeds_counter
+seeds_counter = 0
 reset_times = []
 reconnect = False
 bot.press("A")
 bot.pause(5)
 loop_counter = 0
+
 while loop_counter < 10 and consecutive_failures < 5:
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
-    
+
     tic = 0
     reset_time = 0
     # Boot time measurement statistics never had a value outside range of 2.5 to 3.1 seconds
@@ -82,10 +83,8 @@ while loop_counter < 10 and consecutive_failures < 5:
         reconnect = True
         consecutive_failures += 1
         continue
+
     this_time = tic - reset_time
     reset_times.append(this_time)
     print(f"Measured a time of {this_time}. Running average is {sum(reset_times)/len(reset_times)}")
     loop_counter += 1
-    
-    
-
