@@ -1,5 +1,6 @@
 import signal, json, csv, os
 from time import perf_counter
+from collections import Counter
 from seed_bot import SeedBot, SeedBotUSB
 
 with open("config.json", "r", encoding="utf-8") as f:
@@ -80,6 +81,8 @@ for i in range(90):
 blink_start_good_values = tuple(blink_start_good_values)
 seed_delay = INITIAL_SEED_DELAY + seeds_counter
 current_seeds = []
+current_times = []
+prior_time = None
 reconnect = False
 
 while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
@@ -267,6 +270,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # A press to trigger seed
     bot.press(SEED_BUTTON)
     toc = perf_counter()
+    this_time = toc-tic
     bot.pause(2.05)
 
     # Stall until seed is initialized
@@ -312,29 +316,44 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
     seeds_counter += 1
     print(
-        f"{seeds_counter:04d} - {initial_seed:04X} | {seed_delay} ({(toc - tic):.4f})"
+        f"{seeds_counter:04d} - {initial_seed:04X} | {seed_delay} ({(this_time):.4f})"
     )
 
-    with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow([f"{initial_seed:04X}", seed_delay, toc - tic])
-
     if REPEAT_MODE == "FIXED":
+        # "FIXED" mode records all entries
         repeat_counter += 1
+        with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow([f"{initial_seed:04X}", seed_delay, this_time])
 
         if repeat_counter == REPEAT_TIMES:
             repeat_counter = 0
             seed_delay += 1
-    else:
-        if (
-            len(current_seeds) == 0
-            or len(current_seeds) == 1
-            and current_seeds[0] != initial_seed
-        ):
-            current_seeds.append(initial_seed)
+    else: 
+        # "AUTO" mode checks for apparent timing discrepencies, will only commit entries once a unique mode emerges
+        if prior_time and this_time - prior_time > 0.05 or this_time < prior_time:
+            print(f"Apparent discrepency. Discarding last measurement")
         else:
-            seed_delay += 1
-            current_seeds = []
+            current_seeds.append(initial_seed)
+            current_times.append(this_time)
+            counts = Counter(current_seeds)
+            two_most_frequent = counts.most_common(2)
+            if (  
+                (len(two_most_frequent) == 1 and two_most_frequent[0][1] > 1) # unique seed that has appeared more than once
+                or (two_most_frequent[0][1] > two_most_frequent[1][1]) # not unique seed, but there is a unique mode
+                ):            
+                most_frequent_seed = two_most_frequent[0][0]
+                t = 0
+                with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+                    writer = csv.writer(file)
+                    for seed_entry, time_entry in zip(current_seeds, current_times):
+                        if seed_entry == most_frequent_seed:
+                            writer.writerow([f"{seed_entry:04X}", seed_delay, time_entry])
+                            t += time_entry
+                prior_time = t / two_most_frequent[0][1]
+                seed_delay +=1
+                current_seeds = []
+                current_times = []
 
     consecutive_failures = 0
     reconnect = False
