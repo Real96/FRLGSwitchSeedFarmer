@@ -31,7 +31,6 @@ else:
 OUTPUT_FILE_NAME = config["OUTPUT_FILE_NAME"]
 USB = config["USB"]
 DEBUG = config["DEBUG"]
-EMUNAND = config["EMUNAND"]
 
 bot = (
     SeedBotUSB(config["USB_INDEX"], config["SKIP_PROFILE"])
