@@ -83,7 +83,7 @@ current_seeds = []
 current_times = []
 prior_time = None
 reconnect = False
-bot.sleep(5)
+bot.pause(5)
 
 while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
