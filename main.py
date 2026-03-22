@@ -331,7 +331,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             seed_delay += 1
     else: 
         # "AUTO" mode checks for apparent timing discrepencies, will only commit entries once a unique mode emerges
-        if prior_time and this_time - prior_time > 0.05 or this_time < prior_time:
+        if prior_time and ( this_time - prior_time > 0.05 or this_time < prior_time ):
             print(f"Apparent discrepency. Discarding last measurement")
         else:
             current_seeds.append(initial_seed)
