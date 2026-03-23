@@ -27,7 +27,6 @@ signal.signal(signal.SIGINT, signal_handler)
 
 LOW_VBLANK_HERALDING = 256
 seeds_counter = 0
-consecutive_failures = 0
 reset_times = []
 reconnect = False
 bot.press("A")
