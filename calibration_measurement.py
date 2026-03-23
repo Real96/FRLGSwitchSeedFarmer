@@ -27,6 +27,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 LOW_VBLANK_HERALDING = 256
 seeds_counter = 0
+consecutive_failures = 0
 reset_times = []
 reconnect = False
 bot.press("A")
@@ -85,6 +86,6 @@ while loop_counter < 10:
     this_time = tic - reset_time
     reset_times.append(this_time)
     print(
-        f"Measured a time of {this_time}. Running average is {sum(reset_times)/len(reset_times)}"
+        f"Measured a time of {this_time}. Running average is {sum(reset_times) / len(reset_times)}"
     )
     loop_counter += 1
