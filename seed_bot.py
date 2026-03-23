@@ -90,7 +90,7 @@ class SeedBot(ABC):
         pass
 
     @abstractmethod
-    def send(self, data):
+    def _send(self, data):
         pass
 
     @abstractmethod
@@ -107,7 +107,7 @@ class SeedBot(ABC):
 
     def send_command(self, content):
         content += "\r\n"  # important for the parser on the switch side
-        self.send(content.encode())
+        self._send(content.encode())
 
     # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
     def read(self, address, size):
@@ -246,7 +246,7 @@ class SeedBotIP(SeedBot):
         self.send_command("configure echoCommands 0")
         self.send_command("configure mainLoopSleepTime 0")
 
-    def send(self, data):
+    def _send(self, data):
         self.s.sendall(data)
 
     def _read(self, size):
@@ -257,16 +257,16 @@ class SeedBotIP(SeedBot):
 
         return buf
 
-    def shutdown(self):
-        self.s.shutdown(socket.SHUT_RDWR)
-        self.s.close()
-
     def get_title_id(self):
         self.send_command("getTitleID")
         sleep(0.005)
         buf = self.s.recv(18)
 
         return int(buf[0:-1], 16)
+
+    def shutdown(self):
+        self.s.shutdown(socket.SHUT_RDWR)
+        self.s.close()
 
 
 class SeedBotUSB(SeedBot):
@@ -307,7 +307,7 @@ class SeedBotUSB(SeedBot):
 
         print("Bot Connected")
 
-    def send(self, data: bytes):
+    def _send(self, data: bytes):
         packet_size = len(data) + 2
         self.ep_out.write(packet_size.to_bytes(4, "little"))
         self.ep_out.write(data)
@@ -324,15 +324,9 @@ class SeedBotUSB(SeedBot):
 
         return bytes(buf)
 
-    # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
-    def read(self, address, size):
-        self.send_command(f"peek 0x{address:X} 0x{size:X}")
-
-        return self._read(size)
-
-    def shutdown(self):
-        util.dispose_resources(self.device)
-
     def get_title_id(self):
         self.send_command("getTitleID")
         return int.from_bytes(self._read(), "little")
+
+    def shutdown(self):
+        util.dispose_resources(self.device)
