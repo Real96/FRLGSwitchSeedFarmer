@@ -35,7 +35,6 @@ loop_counter = 0
 
 while loop_counter < 10:
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
-
     tic = 0
     reset_time = 0
     # Boot time measurement statistics never had a value outside range of 2.5 to 3.1 seconds
@@ -50,11 +49,15 @@ while loop_counter < 10:
 
     bot.restart_game(should_reconnect=reconnect, release=SEED_BUTTON)
     reset_time = perf_counter()
+
     if DEBUG:
         print(f"Finished resetting, pausing for {first_read_delay} seconds")
+
     bot.pause(first_read_delay)
+
     if DEBUG:
         print("Reading Vblank counter until heralded value appears")
+
     try:
         vblank_counter = bot.read_vblank_counter()
 
