@@ -79,19 +79,68 @@ GAMES = {
 
 
 class SeedBot:
-    def __init__(self, ip, skip_profile):
-        self.ip = ip
+    def __init__(self, skip_profile):
         self.skip_profile = skip_profile
-        self.connect()
-        self.detect_game()
 
-    def connect(self):
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.settimeout(1)
-        self.s.connect((self.ip, 6000))
-        print("Bot Connected")
-        self.send_command("configure echoCommands 0")
-        self.send_command("configure mainLoopSleepTime 0")
+    def connect(self): raise NotImplementedError
+    def send_command(self, content): raise NotImplementedError
+    def read(self, address, size): raise NotImplementedError
+    def close(self, exitapp=True): raise NotImplementedError
+    def get_title_id(self): raise NotImplementedError
+
+    # A/B/X/Y/LSTICK/RSTICK/L/R/ZL/ZR/PLUS/MINUS/DLEFT/DUP/DDOWN/DRIGHT/HOME/CAPTURE
+    def click(self, button):
+        self.send_command("click " + button)
+
+    def press(self, button):
+        self.send_command("press " + button)
+
+    def release(self, button):
+        self.send_command("release " + button)
+
+    def pause(self, duration):
+        sleep(duration)
+
+    def detach(self):
+        self.send_command("detachController")
+
+    def enter_game(self):
+        self.click("A")
+        self.pause(0.2)
+        self.click("A")
+
+        if self.skip_profile:
+            self.pause(1.3)
+            self.click("A")
+            self.pause(0.2)
+            self.click("A")
+
+    def quit_game(self):
+        self.click("HOME")
+        self.pause(0.8)
+        self.click("X")
+        self.pause(0.2)
+        self.click("X")
+        self.pause(0.4)
+        self.click("A")
+        self.pause(0.2)
+        self.click("A")
+        self.pause(1.3)
+
+    def restart_game(self, should_reconnect=False, button="A", quit_game=True):
+        self.release(button)
+        self.pause(0.05)
+
+        if quit_game:
+            self.quit_game()
+
+        self.enter_game()
+
+        if should_reconnect:
+            self.close(False)
+            self.pause(1.5)
+            self.connect()
+            self.detect_game()
 
     def detect_game(self):
         title_id = self.get_title_id()
@@ -109,93 +158,6 @@ class SeedBot:
             self.vblank_counter_address = game_info["VBlankCounter"]
             self.blink_start_value = game_info["BlinkStartValue"]
             print(f"Game: {self.game_name}\n")
-
-    def send_command(self, content):
-        content += "\r\n"  # important for the parser on the switch side
-        self.s.sendall(content.encode())
-
-    def detach(self):
-        self.send_command("detachController")
-
-    def close(self, exitapp=True):
-        print("Exiting...")
-        self.pause(0.5)
-        self.detach()
-        self.s.shutdown(socket.SHUT_RDWR)
-        self.s.close()
-        print("Bot Disconnected")
-
-        if exitapp:
-            sys.exit(0)
-
-    # A/B/X/Y/LSTICK/RSTICK/L/R/ZL/ZR/PLUS/MINUS/DLEFT/DUP/DDOWN/DRIGHT/HOME/CAPTURE
-    def click(self, button):
-        self.send_command("click " + button)
-
-    def press(self, button):
-        self.send_command("press " + button)
-
-    def release(self, button):
-        self.send_command("release " + button)
-
-    # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
-    def read(self, address, size):
-        self.send_command(f"peek 0x{address:X} 0x{size:X}")
-        # TODO: sensible reading and not an arbitrary wait
-        sleep(size / 0x8000)
-        buf = self.s.recv(2 * size + 1)
-        buf = binascii.unhexlify(buf[:-1])
-
-        return buf
-
-    def get_title_id(self):
-        self.send_command("getTitleID")
-        sleep(0.005)
-        buf = self.s.recv(18)
-
-        return int(buf[0:-1], 16)
-
-    def pause(self, duration):
-        sleep(duration)
-
-    def quit_game(self):
-        self.click("HOME")
-        self.pause(0.8)
-
-        self.click("X")
-        self.pause(0.2)
-        self.click("X")
-        self.pause(0.4)
-        self.click("A")
-        self.pause(0.2)
-        self.click("A")
-        self.pause(1.3)
-
-    def enter_game(self):
-        self.click("A")
-        self.pause(0.2)
-        self.click("A")
-
-        if self.skip_profile:
-            self.pause(1.3)
-            self.click("A")
-            self.pause(0.2)
-            self.click("A")
-
-    def restart_game(self, should_reconnect=False, release="A", quit_game=True):
-        self.release(release)
-        self.pause(0.05)
-
-        if quit_game:
-            self.quit_game()
-
-        self.enter_game()
-
-        if should_reconnect:
-            self.close(False)
-            self.pause(1.5)
-            self.connect()
-            self.detect_game()
 
     def read_initial_seed(self):
         return int.from_bytes(self.read(0x1208000, 2), "little")
@@ -233,11 +195,57 @@ class SeedBot:
     def read_first_task_data(self):
         return int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
 
+class SeedBotIP(SeedBot):
+    def __init__(self, ip, skip_profile):
+        super().__init__(skip_profile)
+        self.ip = ip
+        self.connect()
+        self.detect_game()
 
-class SeedBotUSB:
-    def __init__(self, index, skip_profile):
-        self.index = index
-        self.skip_profile = skip_profile
+    def connect(self):
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.settimeout(1)
+        self.s.connect((self.ip, 6000))
+        print("Bot Connected")
+        self.send_command("configure echoCommands 0")
+        self.send_command("configure mainLoopSleepTime 0")
+
+    def send_command(self, content):
+        content += "\r\n"  # important for the parser on the Switch side
+        self.s.sendall(content.encode())
+
+    # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
+    def read(self, address, size):
+        self.send_command(f"peek 0x{address:X} 0x{size:X}")
+        # TODO: sensible reading and not an arbitrary wait
+        sleep(size / 0x8000)
+        buf = self.s.recv(2 * size + 1)
+        buf = binascii.unhexlify(buf[:-1])
+
+        return buf
+
+    def close(self, exitapp=True):
+        print("Exiting...")
+        self.pause(0.5)
+        self.detach()
+        self.s.shutdown(socket.SHUT_RDWR)
+        self.s.close()
+        print("Bot Disconnected")
+
+        if exitapp:
+            sys.exit(0)
+
+    def get_title_id(self):
+        self.send_command("getTitleID")
+        sleep(0.005)
+        buf = self.s.recv(18)
+
+        return int(buf[0:-1], 16)
+
+class SeedBotUSB(SeedBot):
+    def __init__(self, usb_index, skip_profile):
+        super().__init__(skip_profile)
+        self.usb_index = usb_index
         self.connect()
         self.detect_game()
 
@@ -247,12 +255,12 @@ class SeedBotUSB:
         if not devices:
             raise Exception("No Switch USB devices found")
 
-        if self.index >= len(devices):
+        if self.usb_index >= len(devices):
             raise Exception(
-                f"The index {self.index} is higher than the numer of Switch USB devices found."
+                f"The USB index {self.usb_index} is higher than the numer of Switch USB devices found."
             )
 
-        self.device = devices[self.index]
+        self.device = devices[self.usb_index]
         self.device.set_configuration()
         cfg = self.device.get_active_configuration()
         intf = cfg[(0, 0)]
@@ -274,23 +282,6 @@ class SeedBotUSB:
 
         print("Bot Connected")
 
-    def detect_game(self):
-        title_id = self.get_title_id()
-
-        if title_id == 0:
-            print("Game not running, starting it and resetting the connection")
-            self.restart_game(should_reconnect=True, quit_game=False)
-        elif title_id not in GAMES:
-            print(f"Unsupported title: {title_id:016X}")
-            self.close()
-        else:
-            game_info = GAMES[title_id]
-            self.game_name = game_info["Game"]
-            self.current_seed_address = game_info["CurrentSeedAddress"]
-            self.vblank_counter_address = game_info["VBlankCounter"]
-            self.blink_start_value = game_info["BlinkStartValue"]
-            print(f"Game: {self.game_name}\n")
-
     def send(self, data: bytes):
         packet_size = len(data) + 2
         self.ep_out.write(packet_size.to_bytes(4, "little"))
@@ -299,7 +290,6 @@ class SeedBotUSB:
     def read_usb(self):
         size_bytes = self.ep_in.read(4, timeout=5000)
         size = int.from_bytes(size_bytes, "little")
-
         buf = bytearray()
 
         while len(buf) < size:
@@ -312,8 +302,11 @@ class SeedBotUSB:
         content += "\r\n"  # important for the parser on the switch side
         self.send(content.encode())
 
-    def detach(self):
-        self.send_command("detachController")
+    # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
+    def read(self, address, size):
+        self.send_command(f"peek 0x{address:X} 0x{size:X}")
+
+        return self.read_usb()
 
     def close(self, exitapp=True):
         print("Exiting...")
@@ -325,102 +318,8 @@ class SeedBotUSB:
         if exitapp:
             sys.exit(0)
 
-    # A/B/X/Y/LSTICK/RSTICK/L/R/ZL/ZR/PLUS/MINUS/DLEFT/DUP/DDOWN/DRIGHT/HOME/CAPTURE
-    def click(self, button):
-        self.send_command("click " + button)
-
-    def press(self, button):
-        self.send_command("press " + button)
-
-    def release(self, button):
-        self.send_command("release " + button)
-
-    # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
-    def read(self, address, size):
-        self.send_command(f"peek 0x{address:X} 0x{size:X}")
-
-        return self.read_usb()
-
     def get_title_id(self):
         self.send_command("getTitleID")
         sleep(0.005)
 
         return int.from_bytes(self.read_usb(), "little")
-
-    def pause(self, duration):
-        sleep(duration)
-
-    def quit_game(self):
-        self.click("HOME")
-        self.pause(0.8)
-
-        self.click("X")
-        self.pause(0.2)
-        self.click("X")
-        self.pause(0.4)
-        self.click("A")
-        self.pause(0.2)
-        self.click("A")
-        self.pause(1.3)
-
-    def enter_game(self):
-        self.click("A")
-        self.pause(0.2)
-        self.click("A")
-
-        if self.skip_profile:
-            self.pause(1.3)
-            self.click("A")
-            self.pause(0.2)
-            self.click("A")
-
-    def restart_game(self, should_reconnect=False, release="A", quit_game=True):
-        self.release(release)
-        self.pause(0.05)
-
-        if quit_game:
-            self.quit_game()
-
-        self.enter_game()
-
-        if should_reconnect:
-            self.close(False)
-            self.pause(1.5)
-            self.connect()
-            self.detect_game()
-
-    def read_initial_seed(self):
-        return int.from_bytes(self.read(0x1208000, 2), "little")
-
-    def read_current_seed(self):
-        return int.from_bytes(self.read(self.current_seed_address, 4), "little")
-
-    def read_vblank_counter(self):
-        return int.from_bytes(self.read(self.vblank_counter_address, 4), "little")
-
-    def read_is_box_pointer_initialized(self):
-        return (
-            int.from_bytes(self.read(self.current_seed_address + 0x10, 4), "little")
-            != 0
-        )
-
-    def read_is_blink_start_initialized(self):
-        return (
-            int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
-            == self.blink_start_value
-        )
-
-    def read_task_two_pointer(self):
-        return int.from_bytes(self.read(self.current_seed_address + 0xE0, 4), "little")
-
-    def read_blink_start_counter(self):
-        return int.from_bytes(self.read(self.current_seed_address + 0xE8, 16), "little")
-
-    def is_title_screen_scene_run(self):
-        return (
-            int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
-            == 3
-        )
-
-    def read_first_task_data(self):
-        return int.from_bytes(self.read(self.current_seed_address + 0x98, 4), "little")
