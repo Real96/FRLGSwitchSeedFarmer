@@ -1,6 +1,5 @@
-import signal, json, csv, os
+import signal, json
 from time import perf_counter
-from collections import Counter
 from seed_bot import SeedBot, SeedBotUSB
 
 with open("config.json", "r", encoding="utf-8") as f:
@@ -34,7 +33,7 @@ bot.press("A")
 bot.pause(5)
 loop_counter = 0
 
-while loop_counter < 10 and consecutive_failures < 5:
+while loop_counter < 10:
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
 
     tic = 0
@@ -55,7 +54,7 @@ while loop_counter < 10 and consecutive_failures < 5:
         print(f"Finished resetting, pausing for {first_read_delay} seconds")
     bot.pause(first_read_delay)
     if DEBUG:
-        print(f"Reading Vblank counter until heralded value appears")
+        print("Reading Vblank counter until heralded value appears")
     try:
         vblank_counter = bot.read_vblank_counter()
 
@@ -81,7 +80,6 @@ while loop_counter < 10 and consecutive_failures < 5:
         )
         bot.pause(15)
         reconnect = True
-        consecutive_failures += 1
         continue
 
     this_time = tic - reset_time
