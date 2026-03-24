@@ -7,7 +7,7 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 - [Hekate-Toolbox](https://github.com/WerWolv/Hekate-Toolbox/releases) installed on the Switch
 
 ## Recommended setup according to reliability
-Be sure to have your Switch charging so it doesn't die or suffer reduced performance
+<ins>**Be sure to have your Switch charging so it doesn't die or suffer reduced performance**</ins>
 - (Best) SysNAND + sys-botbase-cpp + Switch USB connected to the PC
 - (Best) SysNAND + sys-botbase + Switch and PC both connected to the router via Ethernet cable
 - (Good) SysNAND + sys-botbase + PC connected to the router via Ethernet cable and Switch WiFi connected
