@@ -9,19 +9,19 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 ## Recommended setup according to reliability
 <ins>**Be sure to have your Switch charging so it doesn't die or suffer reduced performance**</ins>
 - (Best) SysNAND + sys-botbase-cpp + Switch USB connected to the PC
-- (Best) SysNAND + sys-botbase + Switch and PC both connected to the router via Ethernet cable
-- (Good) SysNAND + sys-botbase + PC connected to the router via Ethernet cable and Switch WiFi connected
+- (Best) SysNAND + sys-botbase + Switch and PC both connected to the same router via Ethernet cable
+- (Good) SysNAND + sys-botbase + PC connected to the same router via Ethernet cable and Switch WiFi connected
 - (Medium) emuNAND + sys-botbase-cpp + Switch USB connected to the PC
-- (Medium) emuNAND + sys-botbase + Switch and PC both connected to the router via Ethernet cable
+- (Medium) emuNAND + sys-botbase + Switch and PC both connected to the same router via Ethernet cable
 - (Bad) all other setups
 
 ## Setup Hekate-Toolbox
-1) Download [toolbox.json](https://downgit.github.io/#/home?url=https://github.com/Real96/FRLGSwitchSeedFarmer/blob/main/toolbox.json) file
-2) Copy it in `/atmosphere/contents/430000000000000B/` folder, inside the Switch SD card
+1) Download [this](https://downgit.github.io/#/home?url=https://github.com/Real96/FRLGSwitchSeedFarmer/blob/main/toolbox.json) zip file
+2) Extract it and copy its content into the `/atmosphere/contents/430000000000000B/` folder on the Switch SD card
 
 ## Start sys-botbase / sys-botbase-cpp
 1) Boot Atmosphere on your Swich
-2) Go inside the Homebrew menu
+2) Open the Homebrew menu
 3) Run Hekate-Toolbox
 4) Turn on sys-botbase / sys-botbase-cpp
 
