@@ -1,7 +1,7 @@
 import signal, json, csv, os
 from time import perf_counter
 from collections import Counter
-from seed_bot import SeedBot, SeedBotUSB
+from seed_bot import SeedBotIP, SeedBotUSB
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
@@ -35,7 +35,7 @@ DEBUG = config["DEBUG"]
 bot = (
     SeedBotUSB(config["USB_INDEX"], config["SKIP_PROFILE"])
     if USB
-    else SeedBot(config["IP"], config["SKIP_PROFILE"])
+    else SeedBotIP(config["IP"], config["SKIP_PROFILE"])
 )
 
 
@@ -105,7 +105,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         first_read_delay -= 1.5
         vblank_timeout -= 1.5
 
-    bot.restart_game(should_reconnect=reconnect, release=SEED_BUTTON)
+    bot.restart_game(should_reconnect=reconnect, button=SEED_BUTTON)
     reset_time = perf_counter()
 
     if DEBUG:

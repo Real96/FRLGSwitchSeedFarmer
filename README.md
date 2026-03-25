@@ -1,12 +1,46 @@
 # FRLGSwitchSeedFarmer
 Python script for farming FRLG Initial Seeds on CFWed Switch
 
+## Prerequisites
+- CFWed Switch
+- [sys-botbase](https://github.com/olliz0r/sys-botbase?tab=readme-ov-file#installation) for WiFi setup or [sys-botbase-cpp](https://github.com/PokemonAutomation/sys-botbase-cpp?tab=readme-ov-file#installation) for USB setup, installed on the Switch
+- [Hekate-Toolbox](https://github.com/WerWolv/Hekate-Toolbox/releases) installed on the Switch
+
+## Recommended setup according to reliability
+<ins>**Be sure to have your Switch charging so it doesn't die or suffer reduced performance**</ins>
+- (Best) SysNAND + sys-botbase-cpp + Switch USB connected to the PC
+- (Best) SysNAND + sys-botbase + Switch and PC both connected to the same router via Ethernet cable
+- (Good) SysNAND + sys-botbase + PC connected to the same router via Ethernet cable and Switch WiFi connected
+- (Medium) emuNAND + sys-botbase-cpp + Switch USB connected to the PC
+- (Medium) emuNAND + sys-botbase + Switch and PC both connected to the same router via Ethernet cable
+- (Bad) all other setups
+
+## Setup Hekate-Toolbox
+1) Download [this](https://downgit.github.io/#/home?url=https://github.com/Real96/FRLGSwitchSeedFarmer/blob/main/toolbox.json) zip file
+2) Extract it and copy its content into the `/atmosphere/contents/430000000000000B/` folder on the Switch SD card
+
+## Start sys-botbase / sys-botbase-cpp
+1) Boot Atmosphere on your Swich
+2) Open the Homebrew menu
+3) Run Hekate-Toolbox
+4) Turn on sys-botbase / sys-botbase-cpp
+
+## How to run the script using Python
+1) Install [Python](https://www.python.org/downloads/) (be sure to add it to `PATH` during the installation)
+2) Open the terminal inside the folder of this project
+3) Run `pip install -r requirements.txt` to install all the needed dependencies
+4) Run `python main.py`
+
+## How to run the script without using Python
+1) Download the [latest release](https://github.com/Real96/FRLGSwitchSeedFarmer/releases/tag/latest-commit) of the executable
+2) Run it
+
 ## Usage:
-1) Install [sys-botbase](https://github.com/olliz0r/sys-botbase?tab=readme-ov-file#installation) for WiFi setup or [sys-botbase-cpp](https://github.com/PokemonAutomation/sys-botbase-cpp?tab=readme-ov-file#installation) for USB setup, and start it
-3) Edit all the settings inside the `config.json` file
-4) Connect the Switch and the PC to the same WiFi/Ethernet connection
-5) Start Pokémon FireRed or Pokémon LeafGreen
-6) Start the script or the executable
+1) Set up one of the environments described above ([**Recommended setup according to reliability**](https://github.com/Real96/FRLGSwitchSeedFarmer/edit/main/README.md#recommended-setup-according-to-reliability))
+2) Start sys-botbase / sys-botbase-cpp on your Switch from Hekate-Toolbox (inside the Homebrew menu)
+3) Edit the necessary settings of the `config.json` file, which is inside the folder of this project
+4) Start Pokémon FireRed or Pokémon LeafGreen
+5) Run the script choosing one of the two "**How to run**" methods described above
 
 ## Settings
 ### IP
