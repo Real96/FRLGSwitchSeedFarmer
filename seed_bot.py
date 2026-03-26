@@ -329,11 +329,11 @@ class SeedBotUSB(SeedBot):
 
     # size here is only to match the ABC
     def _read(self, size):
-        
-        readin = self.ep_in.read(size+4, timeout=100)
+        print(f"Attempting to read {size+4} bytes")
+        readin = self.ep_in.read(size+4, timeout=1000)
         print(f" readin value {readin}, {readin[4:]}")
         return readin[4:]
-        size_bytes = self.ep_in.read(4, timeout=100)
+        size_bytes = self.ep_in.read(4, timeout=1000)
         inferred_size = int.from_bytes(size_bytes, "little")
         if size != inferred_size:
             print(f"Oops! You seem to have requested the wrong read amount. Asked for {size}. Received {inferred_size}")
