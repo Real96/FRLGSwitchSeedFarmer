@@ -317,6 +317,8 @@ class SeedBotUSB(SeedBot):
                  print(f"Timeout error: {e}, {type(e)}, errno: {e.errno} backend_error_code {e.backend_error_code}")
                  break
             except core.USBError as e:
+                if e.backend_error_code == -116:
+                    break
                 print(f"Actual error: {e}, {type(e)}, errno: {e.errno} backend_error_code {e.backend_error_code}")
         print("Recieve flushed")
 
