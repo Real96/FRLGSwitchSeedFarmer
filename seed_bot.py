@@ -309,7 +309,8 @@ class SeedBotUSB(SeedBot):
         print("Bot Connected")
         while True:
             try:
-                self.ep_in.read(self.ep_in.wMaxPacketSize, timeout=5)                
+                raw_in = self.ep_in.read(self.ep_in.wMaxPacketSize, timeout=5)
+                print(f"flushed {self.ep_in.wMaxPacketSize} bytes from input: {raw_in}")      
             except core.USBError as e:
                 # timeout (errno 110 or 60 depending on OS) means buffer is empty
                 if e.errno in (110, 60, 10060): # 110=Linux, 60=macOS, 10060=Win
