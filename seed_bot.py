@@ -315,6 +315,9 @@ class SeedBotUSB(SeedBot):
 
     # size here is only to match the ABC
     def _read(self, size):
+        
+        return self.ep_in.read(size, timeout=30)[4:]
+        
         size_bytes = self.ep_in.read(4, timeout=30)
         inferred_size = int.from_bytes(size_bytes, "little")
         if size != inferred_size:
