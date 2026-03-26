@@ -128,7 +128,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 print(f"Failed to latch herald vblank value of {LOW_VBLANK_HERALDING}.")
                 raise TimeoutError
 
-            bot.pause(0.025)
+            bot.pause(0.002)
             read_enter = perf_counter()
             vblank_counter = bot.read_vblank_counter()
             read_exit = perf_counter()
