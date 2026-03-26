@@ -330,7 +330,7 @@ class SeedBotUSB(SeedBot):
     # size here is only to match the ABC
     def _read(self, size):
         
-        readin = self.ep_in.read(size, timeout=30)[4:]
+        readin = self.ep_in.read(size+4, timeout=30)[4:]
         print(f" readin value {readin}")
         return readin
         size_bytes = self.ep_in.read(4, timeout=30)
