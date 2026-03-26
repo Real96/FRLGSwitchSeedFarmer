@@ -112,6 +112,7 @@ class SeedBot(ABC):
     # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
     def read(self, address, size):
         self.send_command(f"peek 0x{address:X} 0x{size:X}")
+
         return self._read(size)
 
     # A/B/X/Y/LSTICK/RSTICK/L/R/ZL/ZR/PLUS/MINUS/DLEFT/DUP/DDOWN/DRIGHT/HOME/CAPTURE
@@ -326,6 +327,7 @@ class SeedBotUSB(SeedBot):
 
     def get_title_id(self):
         self.send_command("getTitleID")
+
         return int.from_bytes(self._read(size=8), "little")
 
     def shutdown(self):
