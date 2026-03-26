@@ -125,7 +125,6 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 print(f"Failed to latch herald vblank value of {LOW_VBLANK_HERALDING}.")
                 raise TimeoutError
 
-            bot.pause(0.002)
             read_enter = perf_counter()
             vblank_counter = bot.read_vblank_counter()
             read_exit = perf_counter()
@@ -135,10 +134,11 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
         tic = perf_counter()
     # TODO: actual exception types
-    except Exception:
+    except Exception as e:
         print(
             "Error reading RAM for vblank, restarting the game and resetting the connection in 15 seconds"
         )
+        print(e)
         bot.pause(15)
         reconnect = True
         consecutive_failures += 1
@@ -163,8 +163,6 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                         "Timed out waiting to detect last scene of Fadein"
                     )
 
-                bot.pause(0.001)
-
                 if DEBUG:
                     print(hex(first_task_data))
 
@@ -175,10 +173,11 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             reconnect = True
             consecutive_failures += 1
             continue
-        except Exception:
+        except Exception as e:
             print(
                 "Error reading RAM for title screen scene, restarting the game and resetting the connection in 15 seconds"
             )
+            print(e)
             bot.pause(15)
             reconnect = True
             consecutive_failures += 1
@@ -197,7 +196,6 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 if perf_counter() - tic > 25:
                     raise TimeoutError("Timed out waiting to detect BLINK_START task")
 
-                bot.pause(0.001)
                 task_two_pointer = bot.read_task_two_pointer()
 
                 if DEBUG:
@@ -209,10 +207,11 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             reconnect = True
             consecutive_failures += 1
             continue
-        except Exception:
+        except Exception as e:
             print(
                 "Error reading RAM for blink start task, restarting the game and resetting the connection in 15 seconds"
             )
+            print(e)
             bot.pause(15)
             reconnect = True
             consecutive_failures += 1
@@ -226,7 +225,6 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         # Stall until the right number of main game loops have occured
         try:
             while loop_counter < seed_delay - 1:
-                bot.pause(0.001)
                 blink_data = bot.read_blink_start_counter()
                 index = loop_counter % 90
 
@@ -285,8 +283,9 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             continue
         except Exception as e:
             print(
-                "Error reading RAM for blink start state, restarting the game and resetting the connection in 15 seconds"
+                "Error reading RAM for blink start counter, restarting the game and resetting the connection in 15 seconds"
             )
+            print(e)
             bot.pause(15)
             reconnect = True
             consecutive_failures += 1
@@ -318,11 +317,11 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
             bot.pause(0.2)
     # TODO: actual exception types
-    except Exception:
+    except Exception as e:
         print(
-            "Error reading RAM for box pointer, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for seed, restarting the game and resetting the connection in 15 seconds"
         )
-        bot.pause(15)
+        print(e)
         reconnect = True
         consecutive_failures += 1
         continue
@@ -341,10 +340,11 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     try:
         initial_seed = bot.read_initial_seed()
     # TODO: actual exception types
-    except Exception:
+    except Exception as e:
         print(
-            "Error reading RAM for seed, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for vblank, restarting the game and resetting the connection in 15 seconds"
         )
+        print(e)
         bot.pause(15)
         reconnect = True
         consecutive_failures += 1
