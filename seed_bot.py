@@ -146,7 +146,7 @@ class SeedBot(ABC):
         self.pause(0.2)
         self.click("A")
 
-        if self.skip_profile:
+        if not self.skip_profile:
             self.pause(1.3)
             self.click("A")
             self.pause(0.2)
