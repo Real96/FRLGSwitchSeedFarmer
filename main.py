@@ -278,6 +278,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                         f"New data {blink_data} not consistent with old data {prior_blink_data}"
                     )
         except ValueError as e:
+            print(e)
             bot.pause(15)
             reconnect = True
             consecutive_failures += 1
