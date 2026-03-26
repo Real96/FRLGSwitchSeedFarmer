@@ -10,6 +10,6 @@
 	"PROCESSED_TIME_UNIT": 16,
     "USB": false,
     "USB_INDEX": 1,
-    "SKIP_PROFILE": false,
+    "SKIP_PROFILE_ENABLED": false,
     "DEBUG": false
 }
