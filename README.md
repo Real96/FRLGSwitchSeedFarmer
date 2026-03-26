@@ -76,7 +76,7 @@ Set this to `true` if you want to run the bot through USB ports (best option if 
 ### USB_INDEX
 Index of the Switch connected to the PC that will be attached to the bot. Used only if `USB` setting is set to `true`
 
-### SKIP_PROFILE
+### SKIP_PROFILE_ENABLED
 Set this to `true` when you have the option `Skip Selection Screen` (`Settings` > `Users`) turned on. The option appears only when your Switch has just one profile. This will avoid some unnecessary A presses.
 
 ### DEBUG

@@ -117,6 +117,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
         read_enter = perf_counter()
         vblank_counter = bot.read_vblank_counter()
         read_exit = perf_counter()
+
         if DEBUG:
             print(f"VBlank: {vblank_counter}. Time on read {read_exit-read_enter}")
 
