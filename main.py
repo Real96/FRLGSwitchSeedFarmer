@@ -86,12 +86,12 @@ intermediate_check_two = [0 for _ in range(90)]
 intermediate_check_three = [0 for _ in range(90)]
 
 for i in range(90):
-    
     prior = blink_start_good_values[i]
     new_index = i + 1
+
     if new_index == 90:
         new_index = 0
-       
+
     prior_zero = prior & 0xFFFF
     prior_one = (prior >> 16) & 0xFFFF
 
@@ -101,11 +101,10 @@ for i in range(90):
         base = 0x3C00000000
 
     intermediate_one = base | prior_zero
-
     prior_zero += 1
     intermediate_two = base | prior_zero
-
     prior_two = base >> 32
+
     if prior_zero >= prior_two:
         intermediate_three = base
     else:
@@ -266,41 +265,45 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             while loop_counter < seed_delay - 1:
                 bot.pause(0.0005)
                 blink_data = bot.read_blink_start_counter()
-                
+
                 # Simplest case is an identical read to prior
                 if blink_data == prior_blink_data:
                     continue
+
                 index = loop_counter % 90
+
                 # Data matches the next expected value in the sequence or one of the expected intermediates
                 if  (
                         blink_data == blink_start_good_values[index]
                   or    blink_data == intermediate_check_one[index]
                   or    blink_data == intermediate_check_two[index]
-                  or    blink_data == intermediate_check_three[index]                  
+                  or    blink_data == intermediate_check_three[index]
                   ):
                     loop_counter += 1
                     prior_blink_data = blink_start_good_values[index]
                     continue
 
                 # Test for if a single main loop was missed
-                loop_counter +=1 
+                loop_counter += 1
+
                 # Only perform this test if skipping a main loop doesn't make us miss target
                 if loop_counter < seed_delay - 1:
                     index = loop_counter % 90
+
                     if  (
                             blink_data == blink_start_good_values[index]
                       or    blink_data == intermediate_check_one[index]
                       or    blink_data == intermediate_check_two[index]
-                      or    blink_data == intermediate_check_three[index]                  
+                      or    blink_data == intermediate_check_three[index]
                       ):
                         loop_counter += 1
                         prior_blink_data = blink_start_good_values[index]
-                        continue              
+                        continue
+
                 # None of the test cases made sense, so we raise an error because we don't understand where we are in the cycle
                 raise ValueError(
                     f"New data {blink_data} not consistent with old data {prior_blink_data}"
                 )
-
         except ValueError as e:
             print(e)
             bot.pause(15)
