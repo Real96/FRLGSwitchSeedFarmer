@@ -320,13 +320,14 @@ class SeedBotUSB(SeedBot):
         buf = bytearray()
 
         while len(buf) < size:
-            chunk = self.ep_in.read(size - len(buf), timeout=100)
+            chunk = self.ep_in.read(size - len(buf), timeout=500)
             buf.extend(chunk)
 
         return bytes(buf)
 
     def get_title_id(self):
         self.send_command("getTitleID")
+        sleep(0.005)
 
         return int.from_bytes(self._read(size=8), "little")
 
