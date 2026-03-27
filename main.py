@@ -339,7 +339,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # TODO: actual exception types
     except Exception as e:
         print(
-            "Error reading RAM for seed, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for box pointer, restarting the game and resetting the connection in 15 seconds"
         )
         print(e)
         reconnect = True
@@ -362,7 +362,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # TODO: actual exception types
     except Exception as e:
         print(
-            "Error reading RAM for vblank, restarting the game and resetting the connection in 15 seconds"
+            "Error reading RAM for seed, restarting the game and resetting the connection in 15 seconds"
         )
         print(e)
         bot.pause(15)
