@@ -62,6 +62,13 @@ sorted_seeds = [f"{compressed_seeds[x]:04X}" for x in indices]
 sorted_times = [compressed_times[x] for x in indices]
 sorted_frames = [compressed_frames[x] for x in indices]
 
+index = 0
+while index < len(sorted_seeds)-1:
+    seed_one = sorted_seeds[index]
+    seed_two = sorted_seeds[index+1]
+    if seed_one == seed_two:
+        print(f"WARNING: Consecutive seed indices {index} and {index+1} are identical: {seed_one}")
+
 column_headers = [
     "Seed",
     f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames",
