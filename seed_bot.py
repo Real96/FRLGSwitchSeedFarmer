@@ -315,12 +315,12 @@ class SeedBotUSB(SeedBot):
 
     # size here is only to match the ABC
     def _read(self, size):
-        size_bytes = self.ep_in.read(4, timeout=30)
+        size_bytes = self.ep_in.read(4, timeout=100)
         size = int.from_bytes(size_bytes, "little")
         buf = bytearray()
 
         while len(buf) < size:
-            chunk = self.ep_in.read(size - len(buf), timeout=30)
+            chunk = self.ep_in.read(size - len(buf), timeout=100)
             buf.extend(chunk)
 
         return bytes(buf)
@@ -328,7 +328,7 @@ class SeedBotUSB(SeedBot):
     def get_title_id(self):
         self.send_command("getTitleID")
 
-        return int.from_bytes(self._read(size=16), "little")
+        return int.from_bytes(self._read(size=8), "little")
 
     def shutdown(self):
         util.dispose_resources(self.device)
