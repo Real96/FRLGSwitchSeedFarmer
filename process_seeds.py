@@ -63,9 +63,11 @@ sorted_times = [compressed_times[x] for x in indices]
 sorted_frames = [compressed_frames[x] for x in indices]
 
 index = 0
-while index < len(sorted_seeds)-1:
+
+while index < len(sorted_seeds) - 1:
     seed_one = sorted_seeds[index]
-    seed_two = sorted_seeds[index+1]
+    seed_two = sorted_seeds[index + 1]
+
     if seed_one == seed_two:
         print(f"WARNING: Consecutive seed indices {index} and {index+1} are identical: {seed_one}")
 
