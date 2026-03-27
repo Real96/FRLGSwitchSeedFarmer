@@ -285,7 +285,7 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
                 # Test for if a single main loop was missed
                 loop_counter +=1 
                 # Only perform this test if skipping a main loop doesn't make us miss target
-                if loop_counter < seed_delay - 1:
+                if loop_counter < seed_delay - 2:
                     index = loop_counter % 90
                     if  (
                             blink_data == blink_start_good_values[index]
