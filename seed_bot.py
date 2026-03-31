@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import sys, socket, binascii
+import sys, socket, binascii, json
 from usb import core, util
 from time import sleep, perf_counter
 
@@ -192,13 +192,20 @@ class SeedBot(ABC):
         else:
             game_info = GAMES[title_id]
             self.game_name = game_info["Game"]
+            self.initial_seed_address = 0x1208000
             self.current_seed_address = game_info["CurrentSeedAddress"]
             self.vblank_counter_address = game_info["VBlankCounter"]
             self.blink_start_value = game_info["BlinkStartValue"]
             print(f"Game: {self.game_name}\n")
+            print(f"Sound: {self.read_options_sound()}")
+            print(f"Button Mode: {self.read_options_button_mode()}")
+
+            with open("config.json", "r", encoding="utf-8") as f:
+                config = json.load(f)
+                print(f"""Seed button: {config["SEED_BUTTON"]}\n""")
 
     def read_initial_seed(self):
-        return int.from_bytes(self.read(0x1208000, 2), "little")
+        return int.from_bytes(self.read(self.initial_seed_address, 2), "little")
 
     def read_current_seed(self):
         return int.from_bytes(self.read(self.current_seed_address, 4), "little")
@@ -211,6 +218,28 @@ class SeedBot(ABC):
             int.from_bytes(self.read(self.current_seed_address + 0x10, 4), "little")
             != 0
         )
+
+    def read_options_bitfield(self):
+        return int.from_bytes(
+            self.read(
+                int.from_bytes(self.read(self.current_seed_address + 0xC, 4), "little")
+                - 0x2020000
+                + self.initial_seed_address
+                + 0x13,
+                3,
+            ),
+            "little",
+        )
+
+    def read_options_sound(self):
+        sound_mode = ["Mono", "Stereo"]
+
+        return sound_mode[(self.read_options_bitfield()) >> 10 & 1]  # bit 9
+
+    def read_options_button_mode(self):
+        button_mode = ["Help", "LR", "L=A"]
+
+        return button_mode[self.read_options_bitfield() & 3]  # bits 0-1
 
     def read_is_blink_start_initialized(self):
         return (
