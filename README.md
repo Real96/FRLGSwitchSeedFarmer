@@ -36,7 +36,7 @@ Python script for farming FRLG Initial Seeds on CFWed Switch
 2) Run it
 
 ## Usage:
-1) Set up one of the environments described above ([**Recommended setup according to reliability**](https://github.com/Real96/FRLGSwitchSeedFarmer/edit/main/README.md#recommended-setup-according-to-reliability))
+1) Set up one of the environments described above ([**Recommended setup according to reliability**](https://github.com/Real96/FRLGSwitchSeedFarmer?tab=readme-ov-file#recommended-setup-according-to-reliability))
 2) Start sys-botbase / sys-botbase-cpp on your Switch from Hekate-Toolbox (inside the Homebrew menu)
 3) Edit the necessary settings of the `config.json` file, which is inside the folder of this project
 4) Start Pokémon FireRed or Pokémon LeafGreen
