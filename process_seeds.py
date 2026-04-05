@@ -73,6 +73,8 @@ while index < len(sorted_seeds) - 1:
             f"WARNING: Consecutive seed indices {index} and {index + 1} are identical: {seed_one}"
         )
 
+    index += 1
+
 column_headers = [
     "Seed",
     f"Seed Time (1/{SUBFRAME_MULTIPLIER}) GBA Frames",
