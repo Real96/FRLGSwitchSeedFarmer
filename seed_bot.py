@@ -1,7 +1,7 @@
+import binascii, json, socket, sys
 from abc import ABC, abstractmethod
-import sys, socket, binascii, json
-from usb import core, util
 from time import sleep
+from usb import core, util
 
 GAMES = {
     0x1006FA0233F8000: {

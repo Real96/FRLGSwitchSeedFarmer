@@ -1,7 +1,7 @@
-import signal, json, csv, os
-from time import perf_counter
+import csv, json, os, signal
 from collections import Counter
 from seed_bot import SeedBotIP, SeedBotUSB
+from time import perf_counter
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)

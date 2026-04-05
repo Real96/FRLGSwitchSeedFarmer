@@ -1,6 +1,6 @@
-import signal, json
-from time import perf_counter
+import json, signal
 from seed_bot import SeedBot, SeedBotUSB
+from time import perf_counter
 
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
@@ -89,4 +89,3 @@ while loop_counter < 30:
     loop_counter += 1
 
 print(reset_times)
-
