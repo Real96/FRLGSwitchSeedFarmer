@@ -83,23 +83,18 @@ for compressed_index, frame in enumerate(compressed_frames):
 
 indices = list(range(len(compressed_frames)))
 indices.sort(key=lambda x: compressed_frames[x])
-
 sorted_seeds = [f"{compressed_seeds[x]:04X}" for x in indices]
 sorted_times = [compressed_times[x] for x in indices]
 sorted_frames = [compressed_frames[x] for x in indices]
 
-index = 0
-
-while index < len(sorted_seeds) - 1:
-    seed_one = sorted_seeds[index]
-    seed_two = sorted_seeds[index + 1]
+for i in range(0, len(sorted_seeds) - 1):
+    seed_one = sorted_seeds[i]
+    seed_two = sorted_seeds[i + 1]
 
     if seed_one == seed_two:
         print(
-            f"WARNING: Consecutive seed indices {index} and {index + 1} are identical: {seed_one}"
+            f"WARNING: Consecutive seed indices {i} and {i + 1} are identical: {seed_one}"
         )
-
-    index += 1
 
 column_headers = [
     "Seed",
