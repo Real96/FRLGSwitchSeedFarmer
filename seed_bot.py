@@ -1,4 +1,4 @@
-import binascii, json, socket, sys
+import binascii, json, re, socket, subprocess, sys
 from abc import ABC, abstractmethod
 from time import sleep
 from usb import core, util
@@ -315,22 +315,48 @@ class SeedBotIP(SeedBot):
 
 
 class SeedBotUSB(SeedBot):
-    def __init__(self, usb_index, skip_profile):
-        self.usb_index = usb_index
+    def __init__(self, usb_port, skip_profile):
+        self.usb_port = usb_port
         super().__init__(skip_profile)
 
+    def get_switch_usb_locations(self):
+        cmd = [
+            "powershell",
+            "-Command",
+            r"Get-PnpDevice -PresentOnly | "
+            r"Where-Object {$_.InstanceId -like 'USB\VID_057E&PID_3000*'} | "
+            r"Get-PnpDeviceProperty DEVPKEY_Device_LocationInfo | "
+            r"Select-Object -ExpandProperty Data",
+        ]
+
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        return result.stdout.strip().splitlines()
+
+    def extract_port_number(self, location):
+        match = re.search(r"Port_#(\d+)", location)
+        return int(match.group(1)) if match else None
+
     def connect(self):
+        locations = self.get_switch_usb_locations()
+        usb_index = None
+
+        # Find index of the Switch USB port
+        for i, location in enumerate(locations):
+            port = self.extract_port_number(location)
+
+            if port == self.usb_port:
+                usb_index = i
+                break
+
+        if usb_index is None:
+            raise Exception(f"No Switch USB device found on port {self.usb_port}")
+
         devices = list(core.find(find_all=True, idVendor=0x057E, idProduct=0x3000))
 
         if not devices:
             raise Exception("No Switch USB devices found")
 
-        if self.usb_index >= len(devices):
-            raise Exception(
-                f"The USB index {self.usb_index} is higher than the numer of Switch USB devices found."
-            )
-
-        self.device = devices[self.usb_index]
+        self.device = devices[usb_index]
         self.device.set_configuration()
         cfg = self.device.get_active_configuration()
         intf = cfg[(0, 0)]

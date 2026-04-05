@@ -39,7 +39,7 @@ else:
 USB = config["USB"]
 DEBUG = config["DEBUG"]
 bot = (
-    SeedBotUSB(config["USB_INDEX"], config["SKIP_PROFILE_ENABLED"])
+    SeedBotUSB(config["USB_PORT"], config["SKIP_PROFILE_ENABLED"])
     if USB
     else SeedBotIP(config["IP"], config["SKIP_PROFILE_ENABLED"])
 )
