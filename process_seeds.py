@@ -8,7 +8,6 @@ with open("config.json", "r", encoding="utf-8") as f:
 SUBFRAME_MULTIPLIER = config["PROCESSED_TIME_UNIT"]
 RAW_FILE_NAME_BASE = config["OUTPUT_FILE_NAME_BASE"]
 RAW_FILE_NAME = ""
-
 matching_files = [f for f in os.listdir(".") if f.startswith(RAW_FILE_NAME_BASE)]
 
 if not matching_files:

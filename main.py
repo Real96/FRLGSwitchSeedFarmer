@@ -3,6 +3,14 @@ from collections import Counter
 from seed_bot import SeedBotIP, SeedBotUSB
 from time import perf_counter
 
+
+def signal_handler(_signal, _advances):  # CTRL+C handler
+    print("Stop request")
+    bot.close()
+
+
+signal.signal(signal.SIGINT, signal_handler)
+
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
 
@@ -27,27 +35,16 @@ else:
     raise ValueError(
         f"{REPEAT_MODE} is an invalid value for REPEAT_MODE. Acceptable values are 'AUTO' or 'FIXED'."
     )
+
 USB = config["USB"]
 DEBUG = config["DEBUG"]
-
 bot = (
     SeedBotUSB(config["USB_INDEX"], config["SKIP_PROFILE_ENABLED"])
     if USB
     else SeedBotIP(config["IP"], config["SKIP_PROFILE_ENABLED"])
 )
-
 game_version = "FR" if bot.game_version == "FireRed" else "LG"
-
 OUTPUT_FILE_NAME = f"{config["OUTPUT_FILE_NAME_BASE"]}_{game_version}_{bot.game_lang}_{bot.options_sound}_{bot.options_button_mode}_{SEED_BUTTON}.csv"
-
-
-def signal_handler(_signal, _advances):  # CTRL+C handler
-    print("Stop request")
-    bot.close()
-
-
-signal.signal(signal.SIGINT, signal_handler)
-
 LOW_VBLANK_HERALDING = 256
 seeds_counter = 0
 vblank_counter = 0
@@ -127,7 +124,6 @@ good_values = tuple(
         intermediate_check_three,
     )
 )
-
 seed_delay = INITIAL_SEED_DELAY + seeds_counter
 current_seeds = []
 current_times = []
