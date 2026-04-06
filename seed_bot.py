@@ -1,4 +1,4 @@
-import binascii, json, re, socket, subprocess, sys
+import binascii, json, platform, re, socket, subprocess, sys
 from abc import ABC, abstractmethod
 from time import sleep
 from usb import core, util
@@ -328,35 +328,59 @@ class SeedBotUSB(SeedBot):
             r"Get-PnpDeviceProperty DEVPKEY_Device_LocationInfo | "
             r"Select-Object -ExpandProperty Data",
         ]
-
         result = subprocess.run(cmd, capture_output=True, text=True)
+
         return result.stdout.strip().splitlines()
 
     def extract_port_number(self, location):
         match = re.search(r"Port_#(\d+)", location)
+
         return int(match.group(1)) if match else None
 
+    def match_port(self, dev):
+        return dev.port_number == self.usb_port
+
+    def get_usb_device(self):
+        if platform.system() == "Windows":
+            locations = self.get_switch_usb_locations()
+            usb_index = None
+
+            # Find index of the Switch USB port
+            for i, location in enumerate(locations):
+                port = self.extract_port_number(location)
+
+                if port == self.usb_port:
+                    usb_index = i
+                    break
+
+            if usb_index is None:
+                raise Exception(f"No Switch USB device found on port {self.usb_port}")
+
+            devices = list(core.find(find_all=True, idVendor=0x057E, idProduct=0x3000))
+
+            if not devices:
+                raise Exception("No Switch USB devices found")
+
+            return devices[usb_index]
+        elif platform.system() == "Linux":
+            devices = list(
+                core.find(
+                    find_all=True,
+                    idVendor=0x057E,
+                    idProduct=0x3000,
+                    custom_match=self.match_port,
+                )
+            )
+
+            if not devices:
+                raise Exception("No Switch USB devices found")
+
+            return devices[0]
+        else:
+            raise Exception("OS System not supported")
+
     def connect(self):
-        locations = self.get_switch_usb_locations()
-        usb_index = None
-
-        # Find index of the Switch USB port
-        for i, location in enumerate(locations):
-            port = self.extract_port_number(location)
-
-            if port == self.usb_port:
-                usb_index = i
-                break
-
-        if usb_index is None:
-            raise Exception(f"No Switch USB device found on port {self.usb_port}")
-
-        devices = list(core.find(find_all=True, idVendor=0x057E, idProduct=0x3000))
-
-        if not devices:
-            raise Exception("No Switch USB devices found")
-
-        self.device = devices[usb_index]
+        self.device = self.get_usb_device()
         self.device.set_configuration()
         cfg = self.device.get_active_configuration()
         intf = cfg[(0, 0)]
