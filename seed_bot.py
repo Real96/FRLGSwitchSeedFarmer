@@ -249,7 +249,7 @@ class SeedBot(ABC):
     def read_options_sound(self):
         sound_mode = ["MONO", "STEREO"]
 
-        return sound_mode[((self.read_options_bitfield()) >> 10) & 1]  # bit 9
+        return sound_mode[((self.read_options_bitfield()) >> 0x10) & 1]  # bit 9
 
     def read_options_button_mode(self):
         button_mode = ["HELP", "LR", "L=A"]
