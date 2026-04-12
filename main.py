@@ -407,19 +407,24 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             if prior_time and (this_time - prior_time > 0.05 or this_time < prior_time):
                 print("Apparent timing discrepency. Discarding last measurement")
             else:
-                if initial_seed != prior_seed:  # Accept prior seed as valid and write to file
-                    with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
-                        writer = csv.writer(file)
-                        writer.writerow([f"{prior_seed:04X}", seed_delay-1, prior_time])
-                    seed_delay+=1
-                    prior_prior_seed = prior_seed
+                if prior_seed is None:
                     prior_seed = initial_seed
                     prior_time = this_time
-                else:                          
-                    STATE = STATE_PRIOR_TEST
-                    seed_delay -=1
-                    cached_prior_time = prior_time
-                    cached_this_time = this_time
+                    seed_delay +=1
+                else:
+                    if initial_seed != prior_seed:  # Accept prior seed as valid and write to file
+                        with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+                            writer = csv.writer(file)
+                            writer.writerow([f"{prior_seed:04X}", seed_delay-1, prior_time])
+                        seed_delay+=1
+                        prior_prior_seed = prior_seed
+                        prior_seed = initial_seed
+                        prior_time = this_time
+                    else:                          
+                        STATE = STATE_PRIOR_TEST
+                        seed_delay -=1
+                        cached_prior_time = prior_time
+                        cached_this_time = this_time
         elif STATE == STATE_PRIOR_TEST:
             seed_to_write = None
             time_to_write = None
