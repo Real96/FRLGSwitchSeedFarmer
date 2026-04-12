@@ -125,12 +125,20 @@ good_values = tuple(
     )
 )
 seed_delay = INITIAL_SEED_DELAY + seeds_counter
-current_seeds = []
-current_times = []
 prior_time = None
+cached_prior_time = None
+cached_this_time = None
 reconnect = False
 bot.press("A")
 bot.pause(5)
+
+prior_prior_seed = None
+prior_seed = None
+extra_wait = 0
+STATE_NORMAL = 0
+STATE_PRIOR_TEST = 1
+STATE_DOUBLE_PRIOR_TEST = 2
+STATE = STATE_NORMAL
 
 while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
     # Verify the game booted and get a time stamp for an event with fixed-time relative to boot
@@ -317,6 +325,8 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             continue
 
     # A press to trigger seed
+    if STATE == STATE_DOUBLE_PRIOR_TEST:
+        bot.pause(extra_time)
     bot.press(SEED_BUTTON)
     toc = perf_counter()
 
@@ -392,41 +402,70 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             repeat_counter = 0
             seed_delay += 1
     else:
-        # "AUTO" mode checks for apparent timing discrepencies, will only commit entries once a unique mode emerges
-        if prior_time and (this_time - prior_time > 0.05 or this_time < prior_time):
-            print("Apparent discrepency. Discarding last measurement")
-        else:
-            current_seeds.append(initial_seed)
-            current_times.append(this_time)
-            counts = Counter(current_seeds)
-            two_most_frequent = counts.most_common(2)
-
-            if two_most_frequent[0][
-                1
-            ] > 1 and (  # Most common seed has appeared multiple times
-                len(two_most_frequent) == 1  # Most common seed is only seed
-                or two_most_frequent[0][1] > two_most_frequent[1][1]
-            ):  # Multiple seeds, but unique mode
-                most_frequent_seed = two_most_frequent[0][0]
-                t = 0
-
+        # "AUTO" mode will treat consecutive identical entries as suspicious and backtrack, as well as severe aparent timing discrepencies
+        if STATE == STATE_NORMAL:
+            if prior_time and (this_time - prior_time > 0.05 or this_time < prior_time):
+                print("Apparent timing discrepency. Discarding last measurement")
+            else:
+                if initial_seed != prior_seed:  # Accept prior seed as valid and write to file
+                    with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+                        writer = csv.writer(file)
+                        writer.writerow([f"{prior_seed:04X}", seed_delay-1, prior_time])
+                    seed_delay+=1
+                    prior_prior_seed = prior_seed
+                    prior_seed = initial_seed
+                    prior_time = this_time
+                else:                          
+                    STATE = STATE_PRIOR_TEST
+                    seed_delay -=1
+                    cached_prior_time = prior_time
+                    cached_this_time = this_time
+        elif STATE == STATE_PRIOR_TEST:
+            seed_to_write = None
+            time_to_write = None
+            if initial_seed != prior_seed:
+                seed_to_write = initial_seed
+                time_to_write = this_time
+            elif seed_delay == 0:
+                seed_to_write = prior_seed
+                time_to_write = cached_prior_time
+            if seeed_to_write is not None:
                 with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
                     writer = csv.writer(file)
-
-                    for seed_entry, time_entry in zip(current_seeds, current_times):
-                        if seed_entry == most_frequent_seed:
-                            writer.writerow(
-                                [f"{seed_entry:04X}", seed_delay, time_entry]
-                            )
-                            t += time_entry
-
-                prior_time = t / two_most_frequent[0][1]
-                seed_delay += 1
-                current_seeds = []
-                current_times = []
-
+                    writer.writerow([f"{seed_to_write:04X}", seed_delay, time_to_write])
+                seed_delay+=2                  
+                prior_prior_seed = seed_to_write  
+                prior_time = cached_this_time
+                STATE = STATE_NORMAL
+            else:                                             # Backtrack to two prior and add intentional waits to try and creep into frame
+                STATE = STATE_DOUBLE_PRIOR_TEST
+                extra_wait = 0.024                            # 24 ms delay initially
+                seed_delay-=1
+        elif STATE == STATE_DOUBLE_PRIOR_TEST:
+            extra_wait -= 0.008            # Reduce wait time by 8 ms
+            seed_to_write = None
+            time_to_write = None
+            if (initial_seed != prior_seed) and (initial_seed != prior_prior_seed): # Accept if seed is different from both the original 2x earlier frame and the current
+                seed_to_write = initial_seed
+                time_to_write = this_time
+            elif extra_wait < 0.008:
+                seed_to_write == prior_seed                                         # or if our delay has effectively become zero
+                time_to_write = cached_prior_time
+            if seed_to_write is not None:
+                with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+                    writer = csv.writer(file)
+                    writer.writerow([f"{seed_to_write:04X}", seed_delay+1, time_to_write])
+                seed_delay+=3                    # need to jump ahead three
+                prior_prior_seed = seed_to_write 
+                prior_time = cached_this_time
+                STATE = STATE_NORMAL
     if DEBUG:
-        print("No problems. Resetting for next cycle")
+        print("Resetting for next cycle")
 
     consecutive_failures = 0
     reconnect = False
+    
+if prior_seed is not None and STATE == STATE_NORMAL: # The last collected seed has no "next" to be compared with and we were not backtracking
+    with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow([f"{prior_seed:04X}", seed_delay-1, prior_time])
