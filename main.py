@@ -326,7 +326,8 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
     # A press to trigger seed
     if STATE == STATE_DOUBLE_PRIOR_TEST:
-        bot.pause(extra_time)
+        bot.pause(extra_wait)
+
     bot.press(SEED_BUTTON)
     toc = perf_counter()
 
@@ -407,60 +408,76 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
             if prior_seed is None:
                 prior_seed = initial_seed
                 prior_time = this_time
-                seed_delay +=1               
+                seed_delay += 1
             elif this_time - prior_time > 0.05 or this_time < prior_time:
                 print("Apparent timing discrepency. Discarding last measurement")
             else:
-                if initial_seed != prior_seed:  # Accept prior seed as valid and write to file
-                    with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+                if (
+                    initial_seed != prior_seed
+                ):  # Accept prior seed as valid and write to file
+                    with open(
+                        OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8"
+                    ) as file:
                         writer = csv.writer(file)
-                        writer.writerow([f"{prior_seed:04X}", seed_delay-1, prior_time])
-                    seed_delay+=1
+                        writer.writerow(
+                            [f"{prior_seed:04X}", seed_delay - 1, prior_time]
+                        )
+
+                    seed_delay += 1
                     prior_prior_seed = prior_seed
                     prior_seed = initial_seed
                     prior_time = this_time
-                else:                          
+                else:
                     STATE = STATE_PRIOR_TEST
-                    seed_delay -=1
+                    seed_delay -= 1
                     cached_prior_time = prior_time
                     cached_this_time = this_time
         elif STATE == STATE_PRIOR_TEST:
             seed_to_write = None
             time_to_write = None
+
             if initial_seed != prior_seed:
                 seed_to_write = initial_seed
                 time_to_write = this_time
             elif seed_delay == 0:
                 seed_to_write = prior_seed
                 time_to_write = cached_prior_time
-            if seeed_to_write is not None:
-                with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
-                    writer = csv.writer(file)
-                    writer.writerow([f"{seed_to_write:04X}", seed_delay, time_to_write])
-                seed_delay+=2                  
-                prior_prior_seed = seed_to_write  
-                prior_time = cached_this_time
-                STATE = STATE_NORMAL
-            else:                                             # Backtrack to two prior and add intentional waits to try and creep into frame
-                STATE = STATE_DOUBLE_PRIOR_TEST
-                extra_wait = 0.024                            # 24 ms delay initially
-                seed_delay-=1
-        elif STATE == STATE_DOUBLE_PRIOR_TEST:
-            extra_wait -= 0.008            # Reduce wait time by 8 ms
-            seed_to_write = None
-            time_to_write = None
-            if (initial_seed != prior_seed) and (initial_seed != prior_prior_seed): # Accept if seed is different from both the original 2x earlier frame and the current
-                seed_to_write = initial_seed
-                time_to_write = this_time
-            elif extra_wait < 0.008:
-                seed_to_write == prior_seed                                         # or if our delay has effectively become zero
-                time_to_write = cached_prior_time
+
             if seed_to_write is not None:
                 with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
                     writer = csv.writer(file)
-                    writer.writerow([f"{seed_to_write:04X}", seed_delay+1, time_to_write])
-                seed_delay+=3                    # need to jump ahead three
-                prior_prior_seed = seed_to_write 
+                    writer.writerow([f"{seed_to_write:04X}", seed_delay, time_to_write])
+
+                seed_delay += 2
+                prior_prior_seed = seed_to_write
+                prior_time = cached_this_time
+                STATE = STATE_NORMAL
+            else:  # Backtrack to two prior and add intentional waits to try and creep into frame
+                STATE = STATE_DOUBLE_PRIOR_TEST
+                extra_wait = 0.024  # 24 ms delay initially
+                seed_delay -= 1
+        elif STATE == STATE_DOUBLE_PRIOR_TEST:
+            extra_wait -= 0.008  # Reduce wait time by 8 ms
+            seed_to_write = None
+            time_to_write = None
+
+            if (initial_seed != prior_seed) and (
+                initial_seed != prior_prior_seed
+            ):  # Accept if seed is different from both the original 2x earlier frame and the current
+                seed_to_write = initial_seed
+                time_to_write = this_time
+            elif extra_wait < 0.008:
+                seed_to_write == prior_seed  # or if our delay has effectively become zero
+                time_to_write = cached_prior_time
+
+            if seed_to_write is not None:
+                with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
+                    writer = csv.writer(file)
+                    writer.writerow(
+                        [f"{seed_to_write:04X}", seed_delay + 1, time_to_write]
+                    )
+                seed_delay += 3  # need to jump ahead three
+                prior_prior_seed = seed_to_write
                 prior_time = cached_this_time
                 STATE = STATE_NORMAL
     if DEBUG:
@@ -468,8 +485,10 @@ while seeds_counter < SEEDS_TO_COLLECT and consecutive_failures < 5:
 
     consecutive_failures = 0
     reconnect = False
-    
-if prior_seed is not None and STATE == STATE_NORMAL: # The last collected seed has no "next" to be compared with and we were not backtracking
+
+if (
+    prior_seed is not None and STATE == STATE_NORMAL
+):  # The last collected seed has no "next" to be compared with and we were not backtracking
     with open(OUTPUT_FILE_NAME, "a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow([f"{prior_seed:04X}", seed_delay-1, prior_time])
+        writer.writerow([f"{prior_seed:04X}", seed_delay - 1, prior_time])
